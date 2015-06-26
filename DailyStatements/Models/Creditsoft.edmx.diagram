@@ -1,0 +1,60 @@
+<?xml version="1.0" encoding="utf-8"?>
+<edmx:Edmx Version="3.0" xmlns:edmx="http://schemas.microsoft.com/ado/2009/11/edmx">
+ <!-- EF Designer content (DO NOT EDIT MANUALLY BELOW HERE) -->
+  <edmx:Designer xmlns="http://schemas.microsoft.com/ado/2009/11/edmx">
+    <!-- Diagram content (shape and connector positions) -->
+    <edmx:Diagrams>
+      <Diagram DiagramId="5181c63fab014e0ca73009db8b63df54" Name="Diagram1">
+        <EntityTypeShape EntityType="Creditsoft.ACHBankAccounts" Width="1.5" PointX="16.5" PointY="45.5" IsExpanded="true" />
+        <EntityTypeShape EntityType="Creditsoft.ACHBatch" Width="1.5" PointX="5.25" PointY="59.375" IsExpanded="true" />
+        <EntityTypeShape EntityType="Creditsoft.ACHBatchDetails" Width="1.5" PointX="18.75" PointY="60.125" IsExpanded="true" />
+        <EntityTypeShape EntityType="Creditsoft.ACHBatchGroup" Width="1.5" PointX="3" PointY="31.5" IsExpanded="true" />
+        <EntityTypeShape EntityType="Creditsoft.ACHGroups" Width="1.5" PointX="3" PointY="34.75" IsExpanded="true" />
+        <EntityTypeShape EntityType="Creditsoft.Bank" Width="1.5" PointX="21.75" PointY="52.5" IsExpanded="true" />
+        <EntityTypeShape EntityType="Creditsoft.BankAccounts" Width="1.5" PointX="0.75" PointY="54.375" IsExpanded="true" />
+        <EntityTypeShape EntityType="Creditsoft.CheckRun" Width="1.5" PointX="6" PointY="55" IsExpanded="true" />
+        <EntityTypeShape EntityType="Creditsoft.Checks" Width="1.5" PointX="8.25" PointY="59.25" IsExpanded="true" />
+        <EntityTypeShape EntityType="Creditsoft.ClientCred" Width="1.5" PointX="11.25" PointY="43" IsExpanded="true" />
+        <EntityTypeShape EntityType="Creditsoft.Clients" Width="1.5" PointX="14.25" PointY="41.75" IsExpanded="true" />
+        <EntityTypeShape EntityType="Creditsoft.CoApps" Width="1.5" PointX="16.5" PointY="69.125" IsExpanded="true" />
+        <EntityTypeShape EntityType="Creditsoft.Creditors" Width="1.5" PointX="3" PointY="38.25" IsExpanded="true" />
+        <EntityTypeShape EntityType="Creditsoft.Locations" Width="1.5" PointX="12" PointY="36.125" IsExpanded="true" />
+        <EntityTypeShape EntityType="Creditsoft.Payments" Width="1.5" PointX="21.5" PointY="57.625" IsExpanded="true" />
+        <EntityTypeShape EntityType="Creditsoft.Receipts" Width="1.5" PointX="24" PointY="56.75" IsExpanded="true" />
+        <EntityTypeShape EntityType="Creditsoft.Custom_DailyStatements" Width="1.5" PointX="0.75" PointY="0.75" IsExpanded="true" />
+        <AssociationConnector Association="Creditsoft.FK_ACHBankAccounts_ACHBankAccounts" ManuallyRouted="false" />
+        <AssociationConnector Association="Creditsoft.FK_ACHBankAccounts_Clients" ManuallyRouted="false" />
+        <AssociationConnector Association="Creditsoft.FK_ACHBatchDetails_ACHBankAccounts" ManuallyRouted="false" />
+        <AssociationConnector Association="Creditsoft.FK_ACHBatch_ACHBatchGroup" ManuallyRouted="false" />
+        <AssociationConnector Association="Creditsoft.FK_ACHBatch_Clients" ManuallyRouted="false" />
+        <AssociationConnector Association="Creditsoft.FK_ACHBatch_Creditors" ManuallyRouted="false" />
+        <AssociationConnector Association="Creditsoft.FK_ACHBatchDetails_ACHBatch" ManuallyRouted="false" />
+        <AssociationConnector Association="Creditsoft.FK_ACHBatchDetails_Clients" ManuallyRouted="false" />
+        <AssociationConnector Association="Creditsoft.FK_Receipts_ACHBatchDetails" ManuallyRouted="false" />
+        <AssociationConnector Association="Creditsoft.FK_ACHGroups_BankAccounts" ManuallyRouted="false" />
+        <AssociationConnector Association="Creditsoft.FK_Receipts_Bank" ManuallyRouted="false" />
+        <AssociationConnector Association="Creditsoft.FK_Creditors_BankAccounts" ManuallyRouted="false" />
+        <AssociationConnector Association="Creditsoft.FK_Payments_BankAccounts" ManuallyRouted="false" />
+        <AssociationConnector Association="Creditsoft.FK_Checks_CheckRun" ManuallyRouted="false" />
+        <AssociationConnector Association="Creditsoft.Checks_FK00" ManuallyRouted="false" />
+        <AssociationConnector Association="Creditsoft.FK_ClientCred_ClientCred" ManuallyRouted="false" />
+        <AssociationConnector Association="Creditsoft.FK_ClientCred_Clients" ManuallyRouted="false" />
+        <AssociationConnector Association="Creditsoft.FK_ClientCred_CoApps" ManuallyRouted="false" />
+        <AssociationConnector Association="Creditsoft.FK_ClientCred_Creditors" ManuallyRouted="false" />
+        <AssociationConnector Association="Creditsoft.FK_ClientCred_OriginalMasterClientID" ManuallyRouted="false" />
+        <AssociationConnector Association="Creditsoft.FK_Clients_Clients" ManuallyRouted="false" />
+        <AssociationConnector Association="Creditsoft.FK_Clients_Creditors" ManuallyRouted="false" />
+        <AssociationConnector Association="Creditsoft.FK_Clients_DefaultCoApp" ManuallyRouted="false" />
+        <AssociationConnector Association="Creditsoft.FK_Clients_Locations" ManuallyRouted="false" />
+        <AssociationConnector Association="Creditsoft.FK_CoApps_Clients" ManuallyRouted="false" />
+        <AssociationConnector Association="Creditsoft.FK_Payments_Clients" ManuallyRouted="false" />
+        <AssociationConnector Association="Creditsoft.FK_Receipts_Clients" ManuallyRouted="false" />
+        <AssociationConnector Association="Creditsoft.FK_Creditors_Creditors" ManuallyRouted="false" />
+        <AssociationConnector Association="Creditsoft.FK_Creditors_Creditors1" ManuallyRouted="false" />
+        <AssociationConnector Association="Creditsoft.FK_Payments_Creditors" ManuallyRouted="false" />
+        <AssociationConnector Association="Creditsoft.FK_Receipts_Creditors" ManuallyRouted="false" />
+        <AssociationConnector Association="Creditsoft.FK_Receipts_Receipts" ManuallyRouted="false" />
+      </Diagram>
+    </edmx:Diagrams>
+  </edmx:Designer>
+</edmx:Edmx>
