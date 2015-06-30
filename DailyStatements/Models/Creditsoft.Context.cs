@@ -20,6 +20,14 @@ namespace DailyStatements.Models
         {
         }
     
+    	public Entities(string ConnectionString)
+    		: base(ConnectionString)
+    		{}
+    
+    		public Entities(DatabaseConfiguration DbConfig)
+    		: base(DbConfig.eb.ToString())
+    		{}
+    
         protected override void OnModelCreating(DbModelBuilder modelBuilder)
         {
             throw new UnintentionalCodeFirstException();

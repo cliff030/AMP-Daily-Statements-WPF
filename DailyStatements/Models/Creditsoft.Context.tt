@@ -80,6 +80,14 @@ foreach (var entitySet in container.BaseEntitySets.OfType<EntitySet>())
 #>
     }
 
+	public <#=code.Escape(container)#>(string ConnectionString)
+		: base(ConnectionString)
+		{}
+
+		public <#=code.Escape(container)#>(DatabaseConfiguration DbConfig)
+		: base(DbConfig.eb.ToString())
+		{}
+
     protected override void OnModelCreating(DbModelBuilder modelBuilder)
     {
         throw new UnintentionalCodeFirstException();

@@ -1,8 +1,32 @@
 ﻿<Window x:Class="DailyStatements.MainWindow"
         xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
         xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
-        Title="MainWindow" Height="350" Width="525">
+        xmlns:vm="clr-namespace:DailyStatements.ViewModels"
+        Title="Daily Statements" Height="468" Width="1091" WindowStartupLocation="CenterScreen">
     <Grid>
-        
+        <Button Content="Change Database" x:Name="ChangeDB" HorizontalAlignment="Left" Margin="12,394,0,0" VerticalAlignment="Top" Width="116" Height="23" Background="{DynamicResource {x:Static SystemColors.ControlLightBrushKey}}"/>
+        <Button x:Name="endButton" Content="Cancel" HorizontalAlignment="Left" Margin="907,394,0,0" VerticalAlignment="Top" Width="75" Background="{DynamicResource {x:Static SystemColors.ControlLightBrushKey}}" IsCancel="True" Height="23"/>
+        <Button x:Name="okButton" Content="OK" HorizontalAlignment="Left" Margin="988,394,0,0" VerticalAlignment="Top" Width="75" Height="23" IsEnabled="False" Background="{DynamicResource {x:Static SystemColors.ControlLightBrushKey}}"/>
+        <DataGrid HorizontalAlignment="Left" Margin="12,24,0,0" ItemsSource="{Binding ACHBatchLists, UpdateSourceTrigger=PropertyChanged}" VerticalAlignment="Top" RenderTransformOrigin="-8.75,-2.462" Height="349" Width="1051" IsSynchronizedWithCurrentItem="True" AutoGenerateColumns="False" SelectionMode="Single" IsReadOnly="True">
+            <DataGrid.Resources>
+                <Style TargetType="DataGridCell">
+                    <Setter Property="BorderThickness" Value="0"/>
+                </Style>
+            </DataGrid.Resources>
+            <DataGrid.Columns>
+                <DataGridTextColumn Header="Batch Group ID" Width="*" Binding="{Binding Path=ACHBatchGroupID}" />
+                <DataGridTextColumn Header="Start Date Filter" Width="*" Binding="{Binding Path=StartDateFilter, StringFormat=d}" />
+                <DataGridTextColumn Header="End Date Filter" Width="*" Binding="{Binding Path=EndDateFilter, StringFormat=d}" />
+                <DataGridTextColumn Header="Created On" Width="*" Binding="{Binding Path=CreatedOn, StringFormat=d}" />
+                <DataGridTextColumn Header="Number of Batches" Width="*" Binding="{Binding Path=NumberOfBatches}" />
+                <DataGridTextColumn Header="Number of Items" Width="*" Binding="{Binding Path=NumberOfItems}" />
+                <DataGridTextColumn Header="Total Amount" Width="*" Binding="{Binding Path=Total, StringFormat=c}" />
+                <DataGridTextColumn Header="Total Debits" Width="*" Binding="{Binding Path=TotalDebits, StringFormat=c}" />
+                <DataGridTextColumn Header="Total Credits" Width="*" Binding="{Binding Path=TotalCredits, StringFormat=c}" />
+                <DataGridTextColumn Header="Date Printed" Width="*" Binding="{Binding Path=DatePrinted, StringFormat=d}" />
+                <DataGridTextColumn Header="Printed By" Width="*" Binding="{Binding Path=PrintedBy}" />
+            </DataGrid.Columns>
+        </DataGrid>
+
     </Grid>
 </Window>
