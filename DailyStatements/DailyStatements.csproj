@@ -75,6 +75,7 @@
     <Compile Include="Models\ACHBatchList.cs" />
     <Compile Include="Models\BatchList.cs" />
     <Compile Include="Models\DatabaseConfiguration.cs" />
+    <Compile Include="Models\Reports\Report.cs" />
     <Compile Include="ViewModels\BatchListViewModel.cs" />
     <Compile Include="ViewModels\RelayCommand.cs" />
     <Compile Include="ViewModels\SelectDatabaseViewModel.cs" />

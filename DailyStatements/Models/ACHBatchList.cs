@@ -82,6 +82,11 @@ namespace DailyStatements.Models
             }
         }
 
+        public List<int> FilteredACHClientIDs
+        {
+            get { return _FilteredACHClientIDs; }
+        }
+
         public int ACHBatchGroupID
         {
             get { return _ACHBatchGroup.ACHBatchGroupID; }
