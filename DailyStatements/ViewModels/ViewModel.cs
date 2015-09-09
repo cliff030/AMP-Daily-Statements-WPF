@@ -10,11 +10,15 @@ namespace DailyStatements.ViewModels
 {
     public abstract class ViewModel : INotifyPropertyChanged, IDisposable
     {
+        
+
         #region Constructors
 
         public ViewModel() { }
 
         #endregion //Constructors
+
+       
 
         #region DisplayName
         public virtual string DisplayName { get; protected set; }

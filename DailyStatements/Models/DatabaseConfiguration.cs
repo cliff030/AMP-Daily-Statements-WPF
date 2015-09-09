@@ -62,10 +62,16 @@ namespace DailyStatements.Models
             FirstFinancial.CompanyName = "First Financial";
             FirstFinancial.DatabaseName = "CSDATA8_FFN";
             FirstFinancial.Order = 2;
+
+            CompanyList KarmaCapital = new CompanyList();
+            KarmaCapital.CompanyName = "Karma Capital";
+            KarmaCapital.DatabaseName = "CSDATA8_KAR";
+            KarmaCapital.Order = 3;
             
             CompanyList.Add(SelectFinancial);
             CompanyList.Add(LibertyFinancial);
             CompanyList.Add(FirstFinancial);
+            CompanyList.Add(KarmaCapital);
 
             return CompanyList;
         }

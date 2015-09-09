@@ -10,6 +10,7 @@ using System.Data.Entity;
 using System.Threading;
 using System.Windows.Input;
 using DailyStatements.ReportExecutionService;
+using System.ComponentModel;
 
 namespace DailyStatements.ViewModels
 {
@@ -30,11 +31,13 @@ namespace DailyStatements.ViewModels
         private RelayCommand _SelectACHBatchListsCommand;
         private RelayCommand _ToggleOkButtonCommand;
         private RelayCommand _CreateReportsCommand;
-
+        private RelayCommand _CancelCommand;
+        private RelayCommand<System.Windows.Window> _ChangeDatabaseCommand;
+        
         private bool _OkButtonEnabled = false;
         private ACHBatchList _SelectedACHBatchList;
         private System.Windows.Visibility _ReportCreationProgressVisibility = System.Windows.Visibility.Hidden;
-        private double _CurrentProgress = 0;
+        private int _CurrentProgress = 0;
 
 #if DEBUG
         private bool _SaveReports = true;
@@ -44,12 +47,12 @@ namespace DailyStatements.ViewModels
 
         #endregion // Fields
 
-        #region Threads
+        #region Workers
 
-        private Thread _BatchListThread;
-        private Thread _CreateReportsThread;
+        private BackgroundWorker _BatchListWorker = new BackgroundWorker();
+        private BackgroundWorker _CreateReportsWorker = new BackgroundWorker();
 
-        #endregion // Threads
+        #endregion // Workers
 
         #region Constructors
 
@@ -57,17 +60,69 @@ namespace DailyStatements.ViewModels
         {
             _config = config;
 
-            _BatchListThread = new Thread(new ThreadStart(_GetACHBatchGroups));
-            _BatchListThread.IsBackground = true;
+            _BatchListWorker.WorkerSupportsCancellation = true;
+            _BatchListWorker.DoWork += _GetACHBatchGroups;
+            _BatchListWorker.RunWorkerCompleted += _BatchListWorkerComplete;
 
-            _BatchListThread.Start();
+            _CreateReportsWorker.WorkerSupportsCancellation = true;
+            _CreateReportsWorker.WorkerReportsProgress = true;
+            _CreateReportsWorker.DoWork += _CreateReports;
+            _CreateReportsWorker.RunWorkerCompleted += _CreateReportsWorkerComplete;
+            _CreateReportsWorker.ProgressChanged += _CreateReportsWorker_ProgressChanged;
+
+            if (! _BatchListWorker.IsBusy)
+            {
+                _BatchListWorker.RunWorkerAsync();
+            }
         }
+
 
         #endregion // Constructors
 
         #region Methods
 
-        private void _GetACHBatchGroups()
+        private void _CreateReportsWorker_ProgressChanged(object sender, ProgressChangedEventArgs e)
+        {
+            CurrentProgress = e.ProgressPercentage;
+        }
+
+        private void _BatchListWorkerComplete(object sender, RunWorkerCompletedEventArgs e)
+        {
+            if(e.Cancelled)
+            {
+                System.Windows.MessageBox.Show("The operation has been cancelled.");
+            }
+            else if(e.Error != null)
+            {
+                System.Windows.MessageBox.Show(e.Error.ToString());
+            }
+            else
+            {
+                ACHBatchLists = new ObservableCollection<ACHBatchList>(_ACHBatchLists.OrderByDescending(a => a.ACHBatchGroupID).ToList());
+                OkButtonEnabled = true;
+            }
+        }
+
+        private void _CreateReportsWorkerComplete(object sender, RunWorkerCompletedEventArgs e)
+        {
+            if(e.Cancelled)
+            {
+                CurrentProgress = 0;
+                ReportCreationProgressVisibility = System.Windows.Visibility.Hidden;
+
+                System.Windows.MessageBox.Show("Report creation cancelled.");
+            }
+            else if(e.Error != null)
+            {
+                System.Windows.MessageBox.Show(e.Error.ToString());
+            }
+            else
+            {
+                System.Windows.MessageBox.Show("Reports printed!");
+            }
+        }
+
+        private void _GetACHBatchGroups(object sender, DoWorkEventArgs e)
         {
             try
             {
@@ -85,52 +140,72 @@ namespace DailyStatements.ViewModels
                     _ACHBatchLists = new ObservableCollection<ACHBatchList>();
                     foreach (ACHBatchGroup BatchGroup in _ACHBatchGroups)
                     {
+                        if(_BatchListWorker.CancellationPending)
+                        {
+                            e.Cancel = true;
+                            break;
+                        }
+
                         cxt.Entry(BatchGroup).Collection(a => a.ACHBatch).Load();
 
                         _ACHBatchLists.Add(new ACHBatchList(_config, BatchGroup));
                     }
-
-                    _ACHBatchLists = new ObservableCollection<ACHBatchList>(_ACHBatchLists.OrderByDescending(a => a.ACHBatchGroupID).ToList());
-                    _OkButtonEnabled = true;
                 }
             }
-            catch (Exception e)
+            catch (Exception ex)
             {
-                System.Windows.MessageBox.Show(e.ToString());
-            }
-            finally
-            {
-                App.Current.Dispatcher.Invoke((Action)delegate
-                    {
-                        base.OnPropertyChanged("OkButtonEnabled");
-                        base.OnPropertyChanged("ACHBatchLists");
-                    });
+                throw ex;
             }
         }
 
         private void _ToggleOkButton()
         {
-            App.Current.Dispatcher.Invoke((Action)delegate
-                   {
-                       if(_SelectedACHBatchList != null)
-                       {
-                           OkButtonEnabled = true;
-                       }
-                   });
+            if(_SelectedACHBatchList != null)
+            {
+                OkButtonEnabled = true;
+            }
         }
 
-        private void _CreateReports()
+        private void _Cancel()
         {
-            App.Current.Dispatcher.Invoke((Action)delegate
+            if (_BatchListWorker.IsBusy == false && _CreateReportsWorker.IsBusy == false)
             {
-                ReportCreationProgressVisibility = System.Windows.Visibility.Visible;
-            });
+                System.Windows.Application.Current.Shutdown();
+            }
+            else
+            {
+                if (_BatchListWorker.WorkerSupportsCancellation)
+                {
+                    _BatchListWorker.CancelAsync();
+                }
+
+                if (_CreateReportsWorker.WorkerSupportsCancellation)
+                {
+                    _CreateReportsWorker.CancelAsync();
+                }
+            }
+        }
+
+        private void _CreateReports(object sender, DoWorkEventArgs e)
+        {
+            if(_SelectedACHBatchList.CreatedOn != null || _SelectedACHBatchList.PrintedBy != null)
+            {
+
+            }
+
+            ReportCreationProgressVisibility = System.Windows.Visibility.Visible;
 
             double i = 0;
             double TotalClients = _SelectedACHBatchList.FilteredACHClientIDs.Count;
 
             foreach (int ClientID in _SelectedACHBatchList.FilteredACHClientIDs)
             {
+                if(_CreateReportsWorker.CancellationPending)
+                {
+                    e.Cancel = true;
+                    break;
+                }
+
                 ParameterValue[] Parameters = new ParameterValue[1];
                 Parameters[0] = new ReportExecutionService.ParameterValue();
                 Parameters[0].Name = "ClientID";
@@ -141,29 +216,30 @@ namespace DailyStatements.ViewModels
 
                 i++;
 
-                App.Current.Dispatcher.Invoke((Action)delegate
-                {
-                    CurrentProgress = (i / TotalClients) * 100;
-                });
+                int Progress = Convert.ToInt32((i / TotalClients) * 100);
+                _CreateReportsWorker.ReportProgress(Progress);
             }
-
-            App.Current.Dispatcher.Invoke((Action)delegate
-            {
-                System.Windows.MessageBox.Show("Reports printed!");
-            });
         }
 
         public void CreateReports()
         {
-            _CreateReportsThread = new Thread(new ThreadStart(_CreateReports));
-            _CreateReportsThread.IsBackground = true;
-
-            _CreateReportsThread.Start();           
+            if(! _CreateReportsWorker.IsBusy)
+            {
+                _CreateReportsWorker.RunWorkerAsync();
+            }
         }
 
         public void SelectACHBatchLists()
         {
 
+        }
+
+        public void ChangeDatabase(System.Windows.Window window)
+        {            
+            var vw = new DailyStatements.Views.SelectDatabaseView();
+            vw.Show();
+            
+            window.Close();
         }
 
         #endregion // Methods
@@ -209,7 +285,7 @@ namespace DailyStatements.ViewModels
             }
         }
 
-        public double CurrentProgress
+        public int CurrentProgress
         {
             get { return _CurrentProgress; }
             set
@@ -225,6 +301,14 @@ namespace DailyStatements.ViewModels
         public ObservableCollection<ACHBatchList> ACHBatchLists
         {
             get { return _ACHBatchLists; }
+            set
+            {
+                if(_ACHBatchLists != value)
+                {
+                    _ACHBatchLists = value;
+                    base.OnPropertyChanged("ACHBatchLists");
+                }
+            }
         }
 
         public ICommand SelectACHBatchListsCommand
@@ -257,6 +341,21 @@ namespace DailyStatements.ViewModels
             }
         }
 
+        public ICommand CancelCommand
+        {
+            get
+            {
+                if (_CancelCommand == null)
+                {
+                    _CancelCommand = new RelayCommand(
+                            param => _Cancel()
+                        );
+                }
+
+                return _CancelCommand;
+            }
+        }
+
         public ICommand CreateReportsCommand
         {
             get
@@ -269,6 +368,19 @@ namespace DailyStatements.ViewModels
                 }
 
                 return _CreateReportsCommand;
+            }
+        }
+
+        public ICommand ChangeDatabaseCommand
+        {
+            get
+            {
+                if(_ChangeDatabaseCommand == null)
+                {
+                    _ChangeDatabaseCommand = new RelayCommand<System.Windows.Window>(ChangeDatabase);
+                }
+
+                return _ChangeDatabaseCommand;
             }
         }
 
