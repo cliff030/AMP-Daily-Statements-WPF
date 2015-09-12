@@ -16,7 +16,7 @@ namespace DailyStatements.Models
         private decimal _TotalCredits = 0;
         private decimal _TotalDebits = 0;
 
-        private Custom_DailyStatements _PrintLog;
+        private Custom_DailyStatementsPrintLog _PrintLog;
 
         public ACHBatchList(DatabaseConfiguration config, ACHBatchGroup ACHBatchGroup)
         {
@@ -49,7 +49,7 @@ namespace DailyStatements.Models
             using(var cxt = new Entities(_config))
             {
                 _PrintLog = (
-                        from cds in cxt.Custom_DailyStatements
+                        from cds in cxt.Custom_DailyStatementsPrintLog
                         where cds.ACHBatchID == _ACHBatchGroup.ACHBatchGroupID
                         select cds
                         ).FirstOrDefault();
@@ -79,6 +79,19 @@ namespace DailyStatements.Models
                         where _FilteredACHClientIDs.Contains(ad.ClientID) && a.ACHBatchGroupID == _ACHBatchGroup.ACHBatchGroupID && ad.Amount >= 0
                         select (decimal?)ad.Amount
                     ).Sum() ?? 0;
+            }
+        }
+
+        public void UpdatePrintLog(System.Security.Principal.WindowsIdentity User)
+        {
+            DateTime CurDate = DateTime.Now;
+
+            using(var cxt = new Entities(_config))
+            {                
+                _PrintLog = new Custom_DailyStatementsPrintLog() { ACHBatchID = _ACHBatchGroup.ACHBatchGroupID, DatePrinted = CurDate, PrintedBy = User.Name, Success = true };
+
+                cxt.Custom_DailyStatementsPrintLog.Add(_PrintLog);
+                cxt.SaveChanges();                                
             }
         }
 
@@ -138,6 +151,11 @@ namespace DailyStatements.Models
             {
                 return _PrintLog == null ? null : (DateTime?)_PrintLog.DatePrinted.Date;
             }
+        }
+
+        public Custom_DailyStatementsPrintLog PrintLog
+        {
+            get { return _PrintLog; }
         }
 
         public string PrintedBy

@@ -21,7 +21,6 @@
         <EntityTypeShape EntityType="Creditsoft.Locations" Width="1.5" PointX="12" PointY="36.125" IsExpanded="true" />
         <EntityTypeShape EntityType="Creditsoft.Payments" Width="1.5" PointX="21.5" PointY="57.625" IsExpanded="true" />
         <EntityTypeShape EntityType="Creditsoft.Receipts" Width="1.5" PointX="24" PointY="56.75" IsExpanded="true" />
-        <EntityTypeShape EntityType="Creditsoft.Custom_DailyStatements" Width="1.5" PointX="0.75" PointY="0.75" IsExpanded="true" />
         <AssociationConnector Association="Creditsoft.FK_ACHBankAccounts_ACHBankAccounts" ManuallyRouted="false" />
         <AssociationConnector Association="Creditsoft.FK_ACHBankAccounts_Clients" ManuallyRouted="false" />
         <AssociationConnector Association="Creditsoft.FK_ACHBatchDetails_ACHBankAccounts" ManuallyRouted="false" />
@@ -54,6 +53,8 @@
         <AssociationConnector Association="Creditsoft.FK_Payments_Creditors" ManuallyRouted="false" />
         <AssociationConnector Association="Creditsoft.FK_Receipts_Creditors" ManuallyRouted="false" />
         <AssociationConnector Association="Creditsoft.FK_Receipts_Receipts" ManuallyRouted="false" />
+        <EntityTypeShape EntityType="Creditsoft.Custom_DailyStatementsPrintLog" Width="1.5" PointX="3.375" PointY="0.75" />
+        <AssociationConnector Association="Creditsoft.FK_ACHGroups_CreditCardBankAccounts" />
       </Diagram>
     </edmx:Diagrams>
   </edmx:Designer>

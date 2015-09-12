@@ -19,6 +19,7 @@ namespace DailyStatements.Models
             this.ACHGroups = new HashSet<ACHGroups>();
             this.Creditors = new HashSet<Creditors>();
             this.Payments = new HashSet<Payments>();
+            this.ACHGroups1 = new HashSet<ACHGroups>();
         }
     
         public int BankAccountID { get; set; }
@@ -85,5 +86,6 @@ namespace DailyStatements.Models
         public virtual ICollection<ACHGroups> ACHGroups { get; set; }
         public virtual ICollection<Creditors> Creditors { get; set; }
         public virtual ICollection<Payments> Payments { get; set; }
+        public virtual ICollection<ACHGroups> ACHGroups1 { get; set; }
     }
 }

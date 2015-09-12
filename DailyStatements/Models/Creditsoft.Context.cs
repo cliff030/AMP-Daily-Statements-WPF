@@ -49,6 +49,6 @@ namespace DailyStatements.Models
         public virtual DbSet<Locations> Locations { get; set; }
         public virtual DbSet<Payments> Payments { get; set; }
         public virtual DbSet<Receipts> Receipts { get; set; }
-        public virtual DbSet<Custom_DailyStatements> Custom_DailyStatements { get; set; }
+        public virtual DbSet<Custom_DailyStatementsPrintLog> Custom_DailyStatementsPrintLog { get; set; }
     }
 }

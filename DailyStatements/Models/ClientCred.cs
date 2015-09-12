@@ -212,6 +212,9 @@ namespace DailyStatements.Models
         public string SuspensionReason { get; set; }
         public string OverpaymentReason { get; set; }
         public Nullable<int> OriginalMasterClientID { get; set; }
+        public bool CSPTier1 { get; set; }
+        public bool CSPTier2 { get; set; }
+        public bool CSPTier3 { get; set; }
     
         public virtual ICollection<ClientCred> ClientCred1 { get; set; }
         public virtual ClientCred ClientCred2 { get; set; }

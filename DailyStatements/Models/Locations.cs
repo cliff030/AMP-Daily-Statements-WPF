@@ -40,6 +40,7 @@ namespace DailyStatements.Models
         public string APIFeesGroup { get; set; }
         public string Product { get; set; }
         public string Notes { get; set; }
+        public Nullable<int> QBCompanyID { get; set; }
     
         public virtual ICollection<Clients> Clients { get; set; }
     }

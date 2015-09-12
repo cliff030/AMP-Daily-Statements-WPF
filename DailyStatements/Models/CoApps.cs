@@ -124,6 +124,9 @@ namespace DailyStatements.Models
         public string BankruptcyAttorneyMiddleName { get; set; }
         public string BankruptcyCourtDistrictCode { get; set; }
         public string BankruptcyCaseNumber { get; set; }
+        public string SignNow_UserID { get; set; }
+        public string SignNow_AccessToken { get; set; }
+        public string MD_PolicyGroup { get; set; }
     
         public virtual ICollection<ClientCred> ClientCred { get; set; }
         public virtual ICollection<Clients> Clients { get; set; }

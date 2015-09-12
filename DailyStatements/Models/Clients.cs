@@ -227,6 +227,18 @@ namespace DailyStatements.Models
         public Nullable<decimal> PSUserDefined8 { get; set; }
         public Nullable<decimal> PSUserDefined9 { get; set; }
         public Nullable<int> ClientIDGroupSecondary { get; set; }
+        public bool UseCC { get; set; }
+        public string SignNow_UserID { get; set; }
+        public string SignNow_AccessToken { get; set; }
+        public Nullable<int> MD_Qualifier { get; set; }
+        public decimal ContractMonthlyFee { get; set; }
+        public string MD_PolicyGroup { get; set; }
+        public string MD_TypeInjuryQualifier { get; set; }
+        public Nullable<System.DateTime> MD_DateOfInjury { get; set; }
+        public bool CreditListed { get; set; }
+        public Nullable<System.DateTime> CreditListedDate { get; set; }
+        public Nullable<System.DateTime> CreditListedFirstDelinquencyDate { get; set; }
+        public string MD_FamilyPlan { get; set; }
     
         public virtual ICollection<ACHBankAccounts> ACHBankAccounts { get; set; }
         public virtual ICollection<ACHBatch> ACHBatch { get; set; }

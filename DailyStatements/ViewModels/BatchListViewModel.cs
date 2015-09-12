@@ -11,6 +11,7 @@ using System.Threading;
 using System.Windows.Input;
 using DailyStatements.ReportExecutionService;
 using System.ComponentModel;
+using System.Windows;
 
 namespace DailyStatements.ViewModels
 {
@@ -27,6 +28,8 @@ namespace DailyStatements.ViewModels
         private DateTime _EndDate = DateTime.Now.AddDays(1).Date;
 
         private DatabaseConfiguration _config;
+
+        private bool _Reprint = false;
 
         private RelayCommand _SelectACHBatchListsCommand;
         private RelayCommand _ToggleOkButtonCommand;
@@ -110,9 +113,6 @@ namespace DailyStatements.ViewModels
         {
             if(e.Cancelled)
             {
-                CurrentProgress = 0;
-                ReportCreationProgressVisibility = System.Windows.Visibility.Hidden;
-
                 System.Windows.MessageBox.Show("Report creation cancelled.");
             }
             else if(e.Error != null)
@@ -121,8 +121,21 @@ namespace DailyStatements.ViewModels
             }
             else
             {
-                System.Windows.MessageBox.Show("Reports printed!");
+               _SelectedACHBatchList.UpdatePrintLog(System.Security.Principal.WindowsIdentity.GetCurrent());
+
+               List<ACHBatchList> tmpACHBatchLists = _ACHBatchLists.ToList();
+               var tmpACHBatchList = tmpACHBatchLists.SingleOrDefault(a => a.ACHBatchGroupID == _SelectedACHBatchList.ACHBatchGroupID);
+               tmpACHBatchList = _SelectedACHBatchList;
+
+               ACHBatchLists = new ObservableCollection<ACHBatchList>(tmpACHBatchLists);
+
+               string prompt = String.Format("Reports for ACHBatchGroupID {0} have been successfully printed.", _SelectedACHBatchList.ACHBatchGroupID);
+
+                System.Windows.MessageBox.Show(prompt);
             }
+
+            CurrentProgress = 0;
+            ReportCreationProgressVisibility = System.Windows.Visibility.Hidden;
         }
 
         private void _GetACHBatchGroups(object sender, DoWorkEventArgs e)
@@ -193,11 +206,32 @@ namespace DailyStatements.ViewModels
 
         private void _CreateReports(object sender, DoWorkEventArgs e)
         {
-            if(_SelectedACHBatchList.CreatedOn != null || _SelectedACHBatchList.PrintedBy != null)
+            _Reprint = false;
+
+            Application.Current.Dispatcher.Invoke((Action)delegate
             {
 
-            }
+                if (_SelectedACHBatchList.PrintLog != null)
+                {
+                    string PromptText = String.Format("ACHBatchGroupID {0} was printed on {1:d} by {2}. Would you like to print it again?",
+                        _SelectedACHBatchList.ACHBatchGroupID, _SelectedACHBatchList.PrintLog.DatePrinted, _SelectedACHBatchList.PrintLog.PrintedBy);
 
+                    var vw = new DailyStatements.Views.GenericModalView(PromptText);
+                    var vm = (GenericModalViewModel)vw.DataContext;
+                    
+                    Nullable<bool> DialogResult = vw.ShowDialog();
+
+                    _Reprint = vm.IsYes;
+                }
+
+            });
+
+            if (_Reprint == false && _SelectedACHBatchList.PrintLog != null)
+            {
+                e.Cancel = true;
+                return;
+            }
+            
             ReportCreationProgressVisibility = System.Windows.Visibility.Visible;
 
             double i = 0;
@@ -240,7 +274,7 @@ namespace DailyStatements.ViewModels
         }
 
         public void ChangeDatabase(System.Windows.Window window)
-        {            
+        {   
             var vw = new DailyStatements.Views.SelectDatabaseView();
             vw.Show();
             

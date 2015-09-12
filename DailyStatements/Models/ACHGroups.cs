@@ -22,7 +22,9 @@ namespace DailyStatements.Models
         public Nullable<int> BankAccountID { get; set; }
         public string WeekDay { get; set; }
         public bool Show { get; set; }
+        public Nullable<int> CreditCardBankAccountID { get; set; }
     
         public virtual BankAccounts BankAccounts { get; set; }
+        public virtual BankAccounts BankAccounts1 { get; set; }
     }
 }

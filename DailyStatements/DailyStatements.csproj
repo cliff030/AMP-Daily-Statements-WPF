@@ -74,12 +74,19 @@
     </ApplicationDefinition>
     <Compile Include="Models\ACHBatchList.cs" />
     <Compile Include="Models\BatchList.cs" />
+    <Compile Include="Models\Custom_DailyStatementsPrintLog.cs">
+      <DependentUpon>Creditsoft.tt</DependentUpon>
+    </Compile>
     <Compile Include="Models\DatabaseConfiguration.cs" />
     <Compile Include="Models\Reports\Report.cs" />
     <Compile Include="ViewModels\BatchListViewModel.cs" />
+    <Compile Include="ViewModels\GenericModalViewModel.cs" />
     <Compile Include="ViewModels\RelayCommand.cs" />
     <Compile Include="ViewModels\SelectDatabaseViewModel.cs" />
     <Compile Include="ViewModels\ViewModel.cs" />
+    <Compile Include="Views\GenericModalView.xaml.cs">
+      <DependentUpon>GenericModalView.xaml</DependentUpon>
+    </Compile>
     <Compile Include="Views\SelectDatabaseView.xaml.cs">
       <DependentUpon>SelectDatabaseView.xaml</DependentUpon>
     </Compile>
@@ -105,6 +112,10 @@
       <DependentUpon>MainWindow.xaml</DependentUpon>
       <SubType>Code</SubType>
     </Compile>
+    <Page Include="Views\GenericModalView.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
     <Page Include="Views\SelectDatabaseView.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
@@ -166,9 +177,6 @@
       <DependentUpon>Creditsoft.edmx</DependentUpon>
     </Compile>
     <Compile Include="Models\Creditsoft.Views.cs" />
-    <Compile Include="Models\Custom_DailyStatements.cs">
-      <DependentUpon>Creditsoft.tt</DependentUpon>
-    </Compile>
     <Compile Include="Models\Locations.cs">
       <DependentUpon>Creditsoft.tt</DependentUpon>
     </Compile>

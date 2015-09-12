@@ -262,6 +262,9 @@ namespace DailyStatements.Models
         public string EIN_SSN { get; set; }
         public string EIN_SSN_Masked { get; set; }
         public string IDType { get; set; }
+        public bool AllowCSPTier1 { get; set; }
+        public bool AllowCSPTier2 { get; set; }
+        public bool AllowCSPTier3 { get; set; }
     
         public virtual ICollection<ACHBatch> ACHBatch { get; set; }
         public virtual BankAccounts BankAccounts { get; set; }

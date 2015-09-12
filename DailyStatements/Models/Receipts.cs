@@ -65,6 +65,8 @@ namespace DailyStatements.Models
         public string ReferenceReceiptNumber { get; set; }
         public string ReferenceDepositNumber { get; set; }
         public bool IsLateReturn { get; set; }
+        public Nullable<int> CCBatchID { get; set; }
+        public Nullable<int> CCBatchDetailsID { get; set; }
     
         public virtual ACHBatchDetails ACHBatchDetails { get; set; }
         public virtual Bank Bank { get; set; }

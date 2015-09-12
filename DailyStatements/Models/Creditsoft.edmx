@@ -140,6 +140,7 @@
           <Property Name="BankAccountID" Type="int" />
           <Property Name="WeekDay" Type="nvarchar" MaxLength="10" />
           <Property Name="Show" Type="bit" Nullable="false" />
+          <Property Name="CreditCardBankAccountID" Type="int" />
         </EntityType>
         <EntityType Name="Bank">
           <Key>
@@ -475,6 +476,9 @@
           <Property Name="SuspensionReason" Type="nvarchar" MaxLength="100" />
           <Property Name="OverpaymentReason" Type="nvarchar" MaxLength="100" />
           <Property Name="OriginalMasterClientID" Type="int" />
+          <Property Name="CSPTier1" Type="bit" Nullable="false" />
+          <Property Name="CSPTier2" Type="bit" Nullable="false" />
+          <Property Name="CSPTier3" Type="bit" Nullable="false" />
         </EntityType>
         <EntityType Name="Clients">
           <Key>
@@ -680,6 +684,18 @@
           <Property Name="PSUserDefined8" Type="decimal" Precision="18" Scale="8" />
           <Property Name="PSUserDefined9" Type="decimal" Precision="18" Scale="8" />
           <Property Name="ClientIDGroupSecondary" Type="int" />
+          <Property Name="UseCC" Type="bit" Nullable="false" />
+          <Property Name="SignNow_UserID" Type="nvarchar(max)" />
+          <Property Name="SignNow_AccessToken" Type="nvarchar(max)" />
+          <Property Name="MD_Qualifier" Type="int" />
+          <Property Name="ContractMonthlyFee" Type="money" Nullable="false" />
+          <Property Name="MD_PolicyGroup" Type="nvarchar" MaxLength="50" />
+          <Property Name="MD_TypeInjuryQualifier" Type="nvarchar" MaxLength="10" />
+          <Property Name="MD_DateOfInjury" Type="datetime" />
+          <Property Name="CreditListed" Type="bit" Nullable="false" />
+          <Property Name="CreditListedDate" Type="datetime" />
+          <Property Name="CreditListedFirstDelinquencyDate" Type="datetime" />
+          <Property Name="MD_FamilyPlan" Type="nvarchar" MaxLength="25" />
         </EntityType>
         <EntityType Name="CoApps">
           <Key>
@@ -789,6 +805,9 @@
           <Property Name="BankruptcyAttorneyMiddleName" Type="nvarchar" MaxLength="50" />
           <Property Name="BankruptcyCourtDistrictCode" Type="nvarchar" MaxLength="100" />
           <Property Name="BankruptcyCaseNumber" Type="nvarchar" MaxLength="20" />
+          <Property Name="SignNow_UserID" Type="nvarchar(max)" />
+          <Property Name="SignNow_AccessToken" Type="nvarchar(max)" />
+          <Property Name="MD_PolicyGroup" Type="nvarchar" MaxLength="50" />
         </EntityType>
         <EntityType Name="Creditors">
           <Key>
@@ -1032,15 +1051,17 @@
           <Property Name="EIN_SSN" Type="nvarchar" MaxLength="14" />
           <Property Name="EIN_SSN_Masked" Type="nvarchar" MaxLength="14" />
           <Property Name="IDType" Type="nvarchar" MaxLength="10" />
+          <Property Name="AllowCSPTier1" Type="bit" Nullable="false" />
+          <Property Name="AllowCSPTier2" Type="bit" Nullable="false" />
+          <Property Name="AllowCSPTier3" Type="bit" Nullable="false" />
         </EntityType>
         <!--Errors Found During Generation:
 warning 6002: The table/view 'CSDATA8.dbo.Custom_DailyStatements' does not have a primary key defined. The key has been inferred and the definition was created as a read-only table/view.-->
-        <EntityType Name="Custom_DailyStatements">
+        <EntityType Name="Custom_DailyStatementsPrintLog">
           <Key>
-            <PropertyRef Name="ACHBatchID" />
-            <PropertyRef Name="DatePrinted" />
-            <PropertyRef Name="Success" />
+            <PropertyRef Name="ID" />
           </Key>
+          <Property Name="ID" Type="int" StoreGeneratedPattern="Identity" Nullable="false" />
           <Property Name="ACHBatchID" Type="int" Nullable="false" />
           <Property Name="DatePrinted" Type="datetime" Nullable="false" />
           <Property Name="PrintedBy" Type="nvarchar" MaxLength="100" />
@@ -1071,6 +1092,7 @@ warning 6002: The table/view 'CSDATA8.dbo.Custom_DailyStatements' does not have 
           <Property Name="APIFeesGroup" Type="nvarchar" MaxLength="50" />
           <Property Name="Product" Type="nvarchar" MaxLength="100" />
           <Property Name="Notes" Type="ntext" />
+          <Property Name="QBCompanyID" Type="int" />
         </EntityType>
         <EntityType Name="Payments">
           <Key>
@@ -1176,6 +1198,8 @@ warning 6002: The table/view 'CSDATA8.dbo.Custom_DailyStatements' does not have 
           <Property Name="ReferenceReceiptNumber" Type="nvarchar" MaxLength="50" />
           <Property Name="ReferenceDepositNumber" Type="nvarchar" MaxLength="50" />
           <Property Name="IsLateReturn" Type="bit" Nullable="false" />
+          <Property Name="CCBatchID" Type="int" />
+          <Property Name="CCBatchDetailsID" Type="int" />
         </EntityType>
         <Association Name="Checks_FK00">
           <End Role="Creditors" Type="Self.Creditors" Multiplicity="0..1" />
@@ -1294,6 +1318,18 @@ warning 6002: The table/view 'CSDATA8.dbo.Custom_DailyStatements' does not have 
             </Principal>
             <Dependent Role="ACHGroups">
               <PropertyRef Name="BankAccountID" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="FK_ACHGroups_CreditCardBankAccounts">
+          <End Role="BankAccounts" Type="Self.BankAccounts" Multiplicity="0..1" />
+          <End Role="ACHGroups" Type="Self.ACHGroups" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="BankAccounts">
+              <PropertyRef Name="BankAccountID" />
+            </Principal>
+            <Dependent Role="ACHGroups">
+              <PropertyRef Name="CreditCardBankAccountID" />
             </Dependent>
           </ReferentialConstraint>
         </Association>
@@ -1577,17 +1613,10 @@ warning 6002: The table/view 'CSDATA8.dbo.Custom_DailyStatements' does not have 
           <EntitySet Name="Clients" EntityType="Self.Clients" Schema="dbo" store:Type="Tables" />
           <EntitySet Name="CoApps" EntityType="Self.CoApps" Schema="dbo" store:Type="Tables" />
           <EntitySet Name="Creditors" EntityType="Self.Creditors" Schema="dbo" store:Type="Tables" />
+          <EntitySet Name="Custom_DailyStatementsPrintLog" EntityType="Self.Custom_DailyStatementsPrintLog" Schema="dbo" store:Type="Tables" />
           <EntitySet Name="Locations" EntityType="Self.Locations" Schema="dbo" store:Type="Tables" />
           <EntitySet Name="Payments" EntityType="Self.Payments" Schema="dbo" store:Type="Tables" />
           <EntitySet Name="Receipts" EntityType="Self.Receipts" Schema="dbo" store:Type="Tables" />
-          <EntitySet Name="Custom_DailyStatements" EntityType="Self.Custom_DailyStatements" store:Type="Tables" store:Schema="dbo">
-            <DefiningQuery>SELECT 
-    [Custom_DailyStatements].[ACHBatchID] AS [ACHBatchID], 
-    [Custom_DailyStatements].[DatePrinted] AS [DatePrinted], 
-    [Custom_DailyStatements].[PrintedBy] AS [PrintedBy], 
-    [Custom_DailyStatements].[Success] AS [Success]
-    FROM [dbo].[Custom_DailyStatements] AS [Custom_DailyStatements]</DefiningQuery>
-          </EntitySet>
           <AssociationSet Name="Checks_FK00" Association="Self.Checks_FK00">
             <End Role="Creditors" EntitySet="Creditors" />
             <End Role="Checks" EntitySet="Checks" />
@@ -1625,6 +1654,10 @@ warning 6002: The table/view 'CSDATA8.dbo.Custom_DailyStatements' does not have 
             <End Role="ACHBatchDetails" EntitySet="ACHBatchDetails" />
           </AssociationSet>
           <AssociationSet Name="FK_ACHGroups_BankAccounts" Association="Self.FK_ACHGroups_BankAccounts">
+            <End Role="BankAccounts" EntitySet="BankAccounts" />
+            <End Role="ACHGroups" EntitySet="ACHGroups" />
+          </AssociationSet>
+          <AssociationSet Name="FK_ACHGroups_CreditCardBankAccounts" Association="Self.FK_ACHGroups_CreditCardBankAccounts">
             <End Role="BankAccounts" EntitySet="BankAccounts" />
             <End Role="ACHGroups" EntitySet="ACHGroups" />
           </AssociationSet>
@@ -1870,6 +1903,8 @@ warning 6002: The table/view 'CSDATA8.dbo.Custom_DailyStatements' does not have 
           <Property Name="WeekDay" Type="String" MaxLength="10" FixedLength="false" Unicode="true" />
           <Property Name="Show" Type="Boolean" Nullable="false" />
           <NavigationProperty Name="BankAccounts" Relationship="Self.FK_ACHGroups_BankAccounts" FromRole="ACHGroups" ToRole="BankAccounts" />
+          <Property Name="CreditCardBankAccountID" Type="Int32" />
+          <NavigationProperty Name="BankAccounts1" Relationship="Creditsoft.FK_ACHGroups_CreditCardBankAccounts" FromRole="ACHGroups" ToRole="BankAccounts" />
         </EntityType>
         <EntityType Name="Bank">
           <Key>
@@ -1960,6 +1995,7 @@ warning 6002: The table/view 'CSDATA8.dbo.Custom_DailyStatements' does not have 
           <NavigationProperty Name="ACHGroups" Relationship="Self.FK_ACHGroups_BankAccounts" FromRole="BankAccounts" ToRole="ACHGroups" />
           <NavigationProperty Name="Creditors" Relationship="Self.FK_Creditors_BankAccounts" FromRole="BankAccounts" ToRole="Creditors" />
           <NavigationProperty Name="Payments" Relationship="Self.FK_Payments_BankAccounts" FromRole="BankAccounts" ToRole="Payments" />
+          <NavigationProperty Name="ACHGroups1" Relationship="Creditsoft.FK_ACHGroups_CreditCardBankAccounts" FromRole="BankAccounts" ToRole="ACHGroups" />
         </EntityType>
         <EntityType Name="CheckRun">
           <Key>
@@ -2218,6 +2254,9 @@ warning 6002: The table/view 'CSDATA8.dbo.Custom_DailyStatements' does not have 
           <NavigationProperty Name="CoApps" Relationship="Self.FK_ClientCred_CoApps" FromRole="ClientCred" ToRole="CoApps" />
           <NavigationProperty Name="Creditors" Relationship="Self.FK_ClientCred_Creditors" FromRole="ClientCred" ToRole="Creditors" />
           <NavigationProperty Name="Clients1" Relationship="Self.FK_ClientCred_OriginalMasterClientID" FromRole="ClientCred" ToRole="Clients" />
+          <Property Name="CSPTier1" Type="Boolean" Nullable="false" />
+          <Property Name="CSPTier2" Type="Boolean" Nullable="false" />
+          <Property Name="CSPTier3" Type="Boolean" Nullable="false" />
         </EntityType>
         <EntityType Name="Clients">
           <Key>
@@ -2436,6 +2475,18 @@ warning 6002: The table/view 'CSDATA8.dbo.Custom_DailyStatements' does not have 
           <NavigationProperty Name="CoApps1" Relationship="Self.FK_CoApps_Clients" FromRole="Clients" ToRole="CoApps" />
           <NavigationProperty Name="Payments" Relationship="Self.FK_Payments_Clients" FromRole="Clients" ToRole="Payments" />
           <NavigationProperty Name="Receipts" Relationship="Self.FK_Receipts_Clients" FromRole="Clients" ToRole="Receipts" />
+          <Property Name="UseCC" Type="Boolean" Nullable="false" />
+          <Property Name="SignNow_UserID" Type="String" MaxLength="Max" FixedLength="false" Unicode="true" />
+          <Property Name="SignNow_AccessToken" Type="String" MaxLength="Max" FixedLength="false" Unicode="true" />
+          <Property Name="MD_Qualifier" Type="Int32" />
+          <Property Name="ContractMonthlyFee" Type="Decimal" Nullable="false" Precision="19" Scale="4" />
+          <Property Name="MD_PolicyGroup" Type="String" MaxLength="50" FixedLength="false" Unicode="true" />
+          <Property Name="MD_TypeInjuryQualifier" Type="String" MaxLength="10" FixedLength="false" Unicode="true" />
+          <Property Name="MD_DateOfInjury" Type="DateTime" Precision="3" />
+          <Property Name="CreditListed" Type="Boolean" Nullable="false" />
+          <Property Name="CreditListedDate" Type="DateTime" Precision="3" />
+          <Property Name="CreditListedFirstDelinquencyDate" Type="DateTime" Precision="3" />
+          <Property Name="MD_FamilyPlan" Type="String" MaxLength="25" FixedLength="false" Unicode="true" />
         </EntityType>
         <EntityType Name="CoApps">
           <Key>
@@ -2548,6 +2599,9 @@ warning 6002: The table/view 'CSDATA8.dbo.Custom_DailyStatements' does not have 
           <NavigationProperty Name="ClientCred" Relationship="Self.FK_ClientCred_CoApps" FromRole="CoApps" ToRole="ClientCred" />
           <NavigationProperty Name="Clients" Relationship="Self.FK_Clients_DefaultCoApp" FromRole="CoApps" ToRole="Clients" />
           <NavigationProperty Name="Clients1" Relationship="Self.FK_CoApps_Clients" FromRole="CoApps" ToRole="Clients" />
+          <Property Name="SignNow_UserID" Type="String" MaxLength="Max" FixedLength="false" Unicode="true" />
+          <Property Name="SignNow_AccessToken" Type="String" MaxLength="Max" FixedLength="false" Unicode="true" />
+          <Property Name="MD_PolicyGroup" Type="String" MaxLength="50" FixedLength="false" Unicode="true" />
         </EntityType>
         <EntityType Name="Creditors">
           <Key>
@@ -2802,6 +2856,9 @@ warning 6002: The table/view 'CSDATA8.dbo.Custom_DailyStatements' does not have 
           <NavigationProperty Name="Creditors3" Relationship="Self.FK_Creditors_Creditors1" FromRole="Creditors1" ToRole="Creditors" />
           <NavigationProperty Name="Payments" Relationship="Self.FK_Payments_Creditors" FromRole="Creditors" ToRole="Payments" />
           <NavigationProperty Name="Receipts" Relationship="Self.FK_Receipts_Creditors" FromRole="Creditors" ToRole="Receipts" />
+          <Property Name="AllowCSPTier1" Type="Boolean" Nullable="false" />
+          <Property Name="AllowCSPTier2" Type="Boolean" Nullable="false" />
+          <Property Name="AllowCSPTier3" Type="Boolean" Nullable="false" />
         </EntityType>
         <EntityType Name="Locations">
           <Key>
@@ -2829,6 +2886,7 @@ warning 6002: The table/view 'CSDATA8.dbo.Custom_DailyStatements' does not have 
           <Property Name="Product" Type="String" MaxLength="100" FixedLength="false" Unicode="true" />
           <Property Name="Notes" Type="String" MaxLength="Max" FixedLength="false" Unicode="true" />
           <NavigationProperty Name="Clients" Relationship="Self.FK_Clients_Locations" FromRole="Locations" ToRole="Clients" />
+          <Property Name="QBCompanyID" Type="Int32" />
         </EntityType>
         <EntityType Name="Payments">
           <Key>
@@ -2943,17 +3001,8 @@ warning 6002: The table/view 'CSDATA8.dbo.Custom_DailyStatements' does not have 
           <NavigationProperty Name="Creditors" Relationship="Self.FK_Receipts_Creditors" FromRole="Receipts" ToRole="Creditors" />
           <NavigationProperty Name="Receipts1" Relationship="Self.FK_Receipts_Receipts" FromRole="Receipts" ToRole="Receipts1" />
           <NavigationProperty Name="Receipts2" Relationship="Self.FK_Receipts_Receipts" FromRole="Receipts1" ToRole="Receipts" />
-        </EntityType>
-        <EntityType Name="Custom_DailyStatements">
-          <Key>
-            <PropertyRef Name="ACHBatchID" />
-            <PropertyRef Name="DatePrinted" />
-            <PropertyRef Name="Success" />
-          </Key>
-          <Property Name="ACHBatchID" Type="Int32" Nullable="false" />
-          <Property Name="DatePrinted" Type="DateTime" Nullable="false" Precision="3" />
-          <Property Name="PrintedBy" Type="String" MaxLength="100" FixedLength="false" Unicode="true" />
-          <Property Name="Success" Type="Boolean" Nullable="false" />
+          <Property Name="CCBatchID" Type="Int32" />
+          <Property Name="CCBatchDetailsID" Type="Int32" />
         </EntityType>
         <Association Name="FK_ACHBankAccounts_ACHBankAccounts">
           <End Role="ACHBankAccounts" Type="Self.ACHBankAccounts" Multiplicity="0..1" />
@@ -3358,7 +3407,6 @@ warning 6002: The table/view 'CSDATA8.dbo.Custom_DailyStatements' does not have 
           <EntitySet Name="Locations" EntityType="Self.Locations" />
           <EntitySet Name="Payments" EntityType="Self.Payments" />
           <EntitySet Name="Receipts" EntityType="Self.Receipts" />
-          <EntitySet Name="Custom_DailyStatements" EntityType="Self.Custom_DailyStatements" />
           <AssociationSet Name="FK_ACHBankAccounts_ACHBankAccounts" Association="Self.FK_ACHBankAccounts_ACHBankAccounts">
             <End Role="ACHBankAccounts" EntitySet="ACHBankAccounts" />
             <End Role="ACHBankAccounts1" EntitySet="ACHBankAccounts" />
@@ -3487,7 +3535,34 @@ warning 6002: The table/view 'CSDATA8.dbo.Custom_DailyStatements' does not have 
             <End Role="Receipts" EntitySet="Receipts" />
             <End Role="Receipts1" EntitySet="Receipts" />
           </AssociationSet>
+          <EntitySet Name="Custom_DailyStatementsPrintLog" EntityType="Creditsoft.Custom_DailyStatementsPrintLog" />
+          <AssociationSet Name="FK_ACHGroups_CreditCardBankAccounts" Association="Creditsoft.FK_ACHGroups_CreditCardBankAccounts">
+            <End Role="BankAccounts" EntitySet="BankAccounts" />
+            <End Role="ACHGroups" EntitySet="ACHGroups" />
+          </AssociationSet>
         </EntityContainer>
+        <EntityType Name="Custom_DailyStatementsPrintLog">
+          <Key>
+            <PropertyRef Name="ID" />
+          </Key>
+          <Property Name="ID" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
+          <Property Name="ACHBatchID" Type="Int32" Nullable="false" />
+          <Property Name="DatePrinted" Type="DateTime" Nullable="false" Precision="3" />
+          <Property Name="PrintedBy" Type="String" MaxLength="100" FixedLength="false" Unicode="true" />
+          <Property Name="Success" Type="Boolean" Nullable="false" />
+        </EntityType>
+        <Association Name="FK_ACHGroups_CreditCardBankAccounts">
+          <End Type="Creditsoft.BankAccounts" Role="BankAccounts" Multiplicity="0..1" />
+          <End Type="Creditsoft.ACHGroups" Role="ACHGroups" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="BankAccounts">
+              <PropertyRef Name="BankAccountID" />
+            </Principal>
+            <Dependent Role="ACHGroups">
+              <PropertyRef Name="CreditCardBankAccountID" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
       </Schema>
     </edmx:ConceptualModels>
     <!-- C-S mapping content -->
@@ -3624,6 +3699,7 @@ warning 6002: The table/view 'CSDATA8.dbo.Custom_DailyStatements' does not have 
           <EntitySetMapping Name="ACHGroups">
             <EntityTypeMapping TypeName="Creditsoft.ACHGroups">
               <MappingFragment StoreEntitySet="ACHGroups">
+                <ScalarProperty Name="CreditCardBankAccountID" ColumnName="CreditCardBankAccountID" />
                 <ScalarProperty Name="ACHGroupID" ColumnName="ACHGroupID" />
                 <ScalarProperty Name="PaymentDueDate" ColumnName="PaymentDueDate" />
                 <ScalarProperty Name="Period" ColumnName="Period" />
@@ -3778,6 +3854,9 @@ warning 6002: The table/view 'CSDATA8.dbo.Custom_DailyStatements' does not have 
           <EntitySetMapping Name="ClientCred">
             <EntityTypeMapping TypeName="Creditsoft.ClientCred">
               <MappingFragment StoreEntitySet="ClientCred">
+                <ScalarProperty Name="CSPTier3" ColumnName="CSPTier3" />
+                <ScalarProperty Name="CSPTier2" ColumnName="CSPTier2" />
+                <ScalarProperty Name="CSPTier1" ColumnName="CSPTier1" />
                 <ScalarProperty Name="ClientCredID" ColumnName="ClientCredID" />
                 <ScalarProperty Name="ClientID" ColumnName="ClientID" />
                 <ScalarProperty Name="CreditorID" ColumnName="CreditorID" />
@@ -3977,6 +4056,18 @@ warning 6002: The table/view 'CSDATA8.dbo.Custom_DailyStatements' does not have 
           <EntitySetMapping Name="Clients">
             <EntityTypeMapping TypeName="Creditsoft.Clients">
               <MappingFragment StoreEntitySet="Clients">
+                <ScalarProperty Name="MD_FamilyPlan" ColumnName="MD_FamilyPlan" />
+                <ScalarProperty Name="CreditListedFirstDelinquencyDate" ColumnName="CreditListedFirstDelinquencyDate" />
+                <ScalarProperty Name="CreditListedDate" ColumnName="CreditListedDate" />
+                <ScalarProperty Name="CreditListed" ColumnName="CreditListed" />
+                <ScalarProperty Name="MD_DateOfInjury" ColumnName="MD_DateOfInjury" />
+                <ScalarProperty Name="MD_TypeInjuryQualifier" ColumnName="MD_TypeInjuryQualifier" />
+                <ScalarProperty Name="MD_PolicyGroup" ColumnName="MD_PolicyGroup" />
+                <ScalarProperty Name="ContractMonthlyFee" ColumnName="ContractMonthlyFee" />
+                <ScalarProperty Name="MD_Qualifier" ColumnName="MD_Qualifier" />
+                <ScalarProperty Name="SignNow_AccessToken" ColumnName="SignNow_AccessToken" />
+                <ScalarProperty Name="SignNow_UserID" ColumnName="SignNow_UserID" />
+                <ScalarProperty Name="UseCC" ColumnName="UseCC" />
                 <ScalarProperty Name="ClientID" ColumnName="ClientID" />
                 <ScalarProperty Name="SSN" ColumnName="SSN" />
                 <ScalarProperty Name="LastName" ColumnName="LastName" />
@@ -4183,6 +4274,9 @@ warning 6002: The table/view 'CSDATA8.dbo.Custom_DailyStatements' does not have 
           <EntitySetMapping Name="CoApps">
             <EntityTypeMapping TypeName="Creditsoft.CoApps">
               <MappingFragment StoreEntitySet="CoApps">
+                <ScalarProperty Name="MD_PolicyGroup" ColumnName="MD_PolicyGroup" />
+                <ScalarProperty Name="SignNow_AccessToken" ColumnName="SignNow_AccessToken" />
+                <ScalarProperty Name="SignNow_UserID" ColumnName="SignNow_UserID" />
                 <ScalarProperty Name="CoAppID" ColumnName="CoAppID" />
                 <ScalarProperty Name="ClientID" ColumnName="ClientID" />
                 <ScalarProperty Name="CoAppFirst" ColumnName="CoAppFirst" />
@@ -4293,6 +4387,9 @@ warning 6002: The table/view 'CSDATA8.dbo.Custom_DailyStatements' does not have 
           <EntitySetMapping Name="Creditors">
             <EntityTypeMapping TypeName="Creditsoft.Creditors">
               <MappingFragment StoreEntitySet="Creditors">
+                <ScalarProperty Name="AllowCSPTier3" ColumnName="AllowCSPTier3" />
+                <ScalarProperty Name="AllowCSPTier2" ColumnName="AllowCSPTier2" />
+                <ScalarProperty Name="AllowCSPTier1" ColumnName="AllowCSPTier1" />
                 <ScalarProperty Name="CreditorID" ColumnName="CreditorID" />
                 <ScalarProperty Name="Name" ColumnName="Name" />
                 <ScalarProperty Name="Address1" ColumnName="Address1" />
@@ -4537,6 +4634,7 @@ warning 6002: The table/view 'CSDATA8.dbo.Custom_DailyStatements' does not have 
           <EntitySetMapping Name="Locations">
             <EntityTypeMapping TypeName="Creditsoft.Locations">
               <MappingFragment StoreEntitySet="Locations">
+                <ScalarProperty Name="QBCompanyID" ColumnName="QBCompanyID" />
                 <ScalarProperty Name="LocationID" ColumnName="LocationID" />
                 <ScalarProperty Name="LocationName" ColumnName="LocationName" />
                 <ScalarProperty Name="BackColor" ColumnName="BackColor" />
@@ -4614,6 +4712,8 @@ warning 6002: The table/view 'CSDATA8.dbo.Custom_DailyStatements' does not have 
           <EntitySetMapping Name="Receipts">
             <EntityTypeMapping TypeName="Creditsoft.Receipts">
               <MappingFragment StoreEntitySet="Receipts">
+                <ScalarProperty Name="CCBatchDetailsID" ColumnName="CCBatchDetailsID" />
+                <ScalarProperty Name="CCBatchID" ColumnName="CCBatchID" />
                 <ScalarProperty Name="ReceiptID" ColumnName="ReceiptID" />
                 <ScalarProperty Name="ClientID" ColumnName="ClientID" />
                 <ScalarProperty Name="DateReceived" ColumnName="DateReceived" />
@@ -4668,13 +4768,14 @@ warning 6002: The table/view 'CSDATA8.dbo.Custom_DailyStatements' does not have 
               </MappingFragment>
             </EntityTypeMapping>
           </EntitySetMapping>
-          <EntitySetMapping Name="Custom_DailyStatements">
-            <EntityTypeMapping TypeName="Creditsoft.Custom_DailyStatements">
-              <MappingFragment StoreEntitySet="Custom_DailyStatements">
-                <ScalarProperty Name="ACHBatchID" ColumnName="ACHBatchID" />
-                <ScalarProperty Name="DatePrinted" ColumnName="DatePrinted" />
-                <ScalarProperty Name="PrintedBy" ColumnName="PrintedBy" />
+          <EntitySetMapping Name="Custom_DailyStatementsPrintLog">
+            <EntityTypeMapping TypeName="Creditsoft.Custom_DailyStatementsPrintLog">
+              <MappingFragment StoreEntitySet="Custom_DailyStatementsPrintLog">
                 <ScalarProperty Name="Success" ColumnName="Success" />
+                <ScalarProperty Name="PrintedBy" ColumnName="PrintedBy" />
+                <ScalarProperty Name="DatePrinted" ColumnName="DatePrinted" />
+                <ScalarProperty Name="ACHBatchID" ColumnName="ACHBatchID" />
+                <ScalarProperty Name="ID" ColumnName="ID" />
               </MappingFragment>
             </EntityTypeMapping>
           </EntitySetMapping>
