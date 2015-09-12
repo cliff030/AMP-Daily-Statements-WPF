@@ -48,5 +48,6 @@
         <Button x:Name="okButton" Content="OK" HorizontalAlignment="Right" Margin="0,0,20,20" VerticalAlignment="Bottom" Width="75" Height="23" 
                 IsEnabled="{Binding OkButtonEnabled,Mode=TwoWay,UpdateSourceTrigger=PropertyChanged}" Background="{DynamicResource {x:Static SystemColors.ControlLightBrushKey}}"
                 Command="{Binding CreateReportsCommand}"/>
+        <TextBlock HorizontalAlignment="Left" Margin="12,50,0,0" TextWrapping="Wrap" Text="Loading please wait..." Visibility="{Binding LoadingPromptVisibility, UpdateSourceTrigger=PropertyChanged}" VerticalAlignment="Top" Height="26" Width="214"/>
     </Grid>
 </Window>

@@ -38,6 +38,7 @@ namespace DailyStatements.ViewModels
         private ACHBatchList _SelectedACHBatchList;
         private System.Windows.Visibility _ReportCreationProgressVisibility = System.Windows.Visibility.Hidden;
         private int _CurrentProgress = 0;
+        private System.Windows.Visibility _LoadingPromptVisibility = System.Windows.Visibility.Visible;
 
 #if DEBUG
         private bool _SaveReports = true;
@@ -88,6 +89,8 @@ namespace DailyStatements.ViewModels
 
         private void _BatchListWorkerComplete(object sender, RunWorkerCompletedEventArgs e)
         {
+            LoadingPromptVisibility = System.Windows.Visibility.Hidden;
+
             if(e.Cancelled)
             {
                 System.Windows.MessageBox.Show("The operation has been cancelled.");
@@ -124,6 +127,8 @@ namespace DailyStatements.ViewModels
 
         private void _GetACHBatchGroups(object sender, DoWorkEventArgs e)
         {
+            LoadingPromptVisibility = System.Windows.Visibility.Visible;
+
             try
             {
                 using (var cxt = new Entities(_config))
@@ -281,6 +286,19 @@ namespace DailyStatements.ViewModels
                 {
                     _OkButtonEnabled = value;
                     base.OnPropertyChanged("OkButtonEnabled");
+                }
+            }
+        }
+
+        public System.Windows.Visibility LoadingPromptVisibility
+        {
+            get { return _LoadingPromptVisibility; }
+            set
+            {
+                if(_LoadingPromptVisibility != value)
+                {
+                    _LoadingPromptVisibility = value;
+                    base.OnPropertyChanged("LoadingPromptVisibility");
                 }
             }
         }
