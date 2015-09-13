@@ -9,9 +9,9 @@ using System.Runtime.InteropServices;
 using System.Security.Principal;
 using System.Text;
 using System.Threading.Tasks;
-using DailyStatements.ReportExecutionService;
+using AMPStatements.ReportExecutionService;
 
-namespace DailyStatements.Models.Reports
+namespace AMPStatements.Models.Reports
 {
     public class Report
     {

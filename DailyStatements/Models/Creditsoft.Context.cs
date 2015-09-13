@@ -7,7 +7,7 @@
 // </auto-generated>
 //------------------------------------------------------------------------------
 
-namespace DailyStatements.Models
+namespace AMPStatements.Models
 {
     using System;
     using System.Data.Entity;

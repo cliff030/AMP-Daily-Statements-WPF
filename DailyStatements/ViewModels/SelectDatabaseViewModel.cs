@@ -5,9 +5,9 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using System.Windows.Input;
-using DailyStatements.Models;
+using AMPStatements.Models;
 
-namespace DailyStatements.ViewModels
+namespace AMPStatements.ViewModels
 {
     public class SelectDatabaseViewModel : ViewModel
     {

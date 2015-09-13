@@ -6,7 +6,7 @@ using System.Text;
 using System.Threading.Tasks;
 using System.Windows.Input;
 
-namespace DailyStatements.ViewModels
+namespace AMPStatements.ViewModels
 {
     /// <summary>
     /// This class is used for Routed Commands that pass parameters to the functions they call. The type should be set to the parameter's type.

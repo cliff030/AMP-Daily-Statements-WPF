@@ -11,9 +11,9 @@ using System.Windows.Input;
 using System.Windows.Media;
 using System.Windows.Media.Imaging;
 using System.Windows.Shapes;
-using DailyStatements.ViewModels;
+using AMPStatements.ViewModels;
 
-namespace DailyStatements.Views
+namespace AMPStatements.Views
 {
     /// <summary>
     /// Interaction logic for SelectDatabaseView.xaml

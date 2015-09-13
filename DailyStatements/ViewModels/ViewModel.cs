@@ -6,7 +6,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace DailyStatements.ViewModels
+namespace AMPStatements.ViewModels
 {
     public abstract class ViewModel : INotifyPropertyChanged, IDisposable
     {

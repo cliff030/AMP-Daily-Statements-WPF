@@ -1,5 +1,5 @@
-﻿using DailyStatements.Models;
-using DailyStatements.Models.Reports;
+﻿using AMPStatements.Models;
+using AMPStatements.Models.Reports;
 using System;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
@@ -9,11 +9,11 @@ using System.Threading.Tasks;
 using System.Data.Entity;
 using System.Threading;
 using System.Windows.Input;
-using DailyStatements.ReportExecutionService;
+using AMPStatements.ReportExecutionService;
 using System.ComponentModel;
 using System.Windows;
 
-namespace DailyStatements.ViewModels
+namespace AMPStatements.ViewModels
 {
     public class BatchListViewModel : ViewModel
     {
@@ -129,7 +129,7 @@ namespace DailyStatements.ViewModels
 
                ACHBatchLists = new ObservableCollection<ACHBatchList>(tmpACHBatchLists);
 
-               string prompt = String.Format("Reports for ACHBatchGroupID {0} have been successfully printed.", _SelectedACHBatchList.ACHBatchGroupID);
+               string prompt = String.Format("Reports for Batch Group ID {0} have been successfully printed.", _SelectedACHBatchList.ACHBatchGroupID);
 
                 System.Windows.MessageBox.Show(prompt);
             }
@@ -213,10 +213,10 @@ namespace DailyStatements.ViewModels
 
                 if (_SelectedACHBatchList.PrintLog != null)
                 {
-                    string PromptText = String.Format("ACHBatchGroupID {0} was printed on {1:d} by {2}. Would you like to print it again?",
+                    string PromptText = String.Format("Batch Group ID {0} was printed on {1:d} by {2}. Would you like to print it again?",
                         _SelectedACHBatchList.ACHBatchGroupID, _SelectedACHBatchList.PrintLog.DatePrinted, _SelectedACHBatchList.PrintLog.PrintedBy);
 
-                    var vw = new DailyStatements.Views.GenericModalView(PromptText);
+                    var vw = new AMPStatements.Views.GenericModalView(PromptText);
                     var vm = (GenericModalViewModel)vw.DataContext;
                     
                     Nullable<bool> DialogResult = vw.ShowDialog();
@@ -275,7 +275,7 @@ namespace DailyStatements.ViewModels
 
         public void ChangeDatabase(System.Windows.Window window)
         {   
-            var vw = new DailyStatements.Views.SelectDatabaseView();
+            var vw = new AMPStatements.Views.SelectDatabaseView();
             vw.Show();
             
             window.Close();
