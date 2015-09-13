@@ -6,11 +6,12 @@
         xmlns:i="clr-namespace:System.Windows.Interactivity;assembly=System.Windows.Interactivity"
         Title="AMP Statements" Height="468" Width="1128" WindowStartupLocation="CenterScreen">
     <Grid>
-        <DataGrid HorizontalAlignment="Center" Margin="10,24,10,0" 
+        <DataGrid HorizontalAlignment="Center" VerticalAlignment="Stretch" Margin="10,24,10,66" 
                   x:Name="ACHBatchLists"
                   ItemsSource="{Binding ACHBatchLists, UpdateSourceTrigger=PropertyChanged}"
-                  VerticalAlignment="Top" IsSynchronizedWithCurrentItem="True" AutoGenerateColumns="False" 
-                  SelectionMode="Single"  IsReadOnly="True" SelectedItem="{Binding SelectedACHBatchList, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" >
+                  IsSynchronizedWithCurrentItem="True" AutoGenerateColumns="False" 
+                  SelectionMode="Single"  IsReadOnly="True" SelectedItem="{Binding SelectedACHBatchList, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" 
+                  ScrollViewer.CanContentScroll="True" ScrollViewer.VerticalScrollBarVisibility="Auto" ScrollViewer.HorizontalScrollBarVisibility="Auto">
             <DataGrid.Resources>
                 <Style TargetType="DataGridCell">
                     <Setter Property="BorderThickness" Value="0"/>
@@ -26,8 +27,8 @@
                 <DataGridTextColumn Header="Total Amount" Width="*" Binding="{Binding Path=Total, StringFormat=c}" />
                 <DataGridTextColumn Header="Total Debits" Width="*" Binding="{Binding Path=TotalDebits, StringFormat=c}" />
                 <DataGridTextColumn Header="Total Credits" Width="*" Binding="{Binding Path=TotalCredits, StringFormat=c}" />
-                <DataGridTextColumn Header="Date Printed" Width="*" Binding="{Binding Path=DatePrinted, StringFormat=d}" />
-                <DataGridTextColumn Header="Printed By" Width="*" Binding="{Binding Path=PrintedBy}" />
+                <DataGridTextColumn Header="Date Printed" Width="*" Binding="{Binding Path=PrintLog.DatePrinted, StringFormat=d}" />
+                <DataGridTextColumn Header="Printed By" Width="*" Binding="{Binding Path=PrintLog.PrintedBy}" />
             </DataGrid.Columns>
             <i:Interaction.Triggers>
                 <i:EventTrigger EventName="SelectionChanged">

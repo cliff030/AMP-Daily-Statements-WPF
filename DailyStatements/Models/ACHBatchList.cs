@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Data.Entity;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
@@ -44,6 +45,24 @@ namespace AMPStatements.Models
             _GetTotalDebits();
         }
 
+        public static List<ACHBatchGroup> GetACHBatchGroups(DatabaseConfiguration config, DateTime StartDate, DateTime EndDate, int limit)
+        {
+            List<ACHBatchGroup> ACHBatchGroups = new List<ACHBatchGroup>();
+
+            using(var cxt = new Entities(config))
+            {
+                ACHBatchGroups = (from ag in cxt.ACHBatchGroup
+                                  join a in cxt.ACHBatch on ag.ACHBatchGroupID equals a.ACHBatchGroupID
+                                  where DbFunctions.TruncateTime(ag.StartDateFilter) >= StartDate.Date && DbFunctions.TruncateTime(ag.EndDateFilter) <= EndDate.Date
+                                  orderby ag.ACHBatchGroupID descending
+                                  select ag).Distinct().ToList().Take(limit).ToList();
+
+                ACHBatchGroups.ForEach(a => cxt.Entry(a).Collection(ach => ach.ACHBatch).Load());
+            }
+
+            return ACHBatchGroups;
+        }
+
         private void _GetPrintLog()
         {
             using(var cxt = new Entities(_config))
@@ -51,6 +70,7 @@ namespace AMPStatements.Models
                 _PrintLog = (
                         from cds in cxt.Custom_DailyStatementsPrintLog
                         where cds.ACHBatchID == _ACHBatchGroup.ACHBatchGroupID
+                        orderby cds.DatePrinted descending
                         select cds
                         ).FirstOrDefault();
             }
@@ -145,25 +165,9 @@ namespace AMPStatements.Models
             get { return _TotalCredits; }
         }        
 
-        public DateTime? DatePrinted
-        {
-            get 
-            {
-                return _PrintLog == null ? null : (DateTime?)_PrintLog.DatePrinted.Date;
-            }
-        }
-
         public Custom_DailyStatementsPrintLog PrintLog
         {
             get { return _PrintLog; }
-        }
-
-        public string PrintedBy
-        {
-            get 
-            {
-                return _PrintLog == null ? String.Empty : _PrintLog.PrintedBy;
-            }
         }
     }
 }

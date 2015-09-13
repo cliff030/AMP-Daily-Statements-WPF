@@ -20,8 +20,6 @@ namespace AMPStatements.ViewModels
 
         #region Fields
 
-        private ObservableCollection<ACHBatchGroup> _ACHBatchGroups = new ObservableCollection<ACHBatchGroup>();
-
         private ObservableCollection<ACHBatchList> _ACHBatchLists = new ObservableCollection<ACHBatchList>();
 
         private DateTime _StartDate = DateTime.Now.AddDays(-30).Date;
@@ -144,30 +142,18 @@ namespace AMPStatements.ViewModels
 
             try
             {
-                using (var cxt = new Entities(_config))
+                List<ACHBatchGroup> ACHBatchGroups = ACHBatchList.GetACHBatchGroups(_config, _StartDate, _EndDate, 25);
+
+                _ACHBatchLists = new ObservableCollection<ACHBatchList>();
+                foreach (ACHBatchGroup BatchGroup in ACHBatchGroups)
                 {
-                    _ACHBatchGroups = new ObservableCollection<ACHBatchGroup>(
-                            (from ag in cxt.ACHBatchGroup
-                             join a in cxt.ACHBatch on ag.ACHBatchGroupID equals a.ACHBatchGroupID
-                             where DbFunctions.TruncateTime(ag.StartDateFilter) >= _StartDate.Date && DbFunctions.TruncateTime(ag.EndDateFilter) <= _EndDate.Date
-                             orderby ag.ACHBatchGroupID descending
-                             select ag).Distinct().ToList().Take(20).ToList()
-                        );
-
-
-                    _ACHBatchLists = new ObservableCollection<ACHBatchList>();
-                    foreach (ACHBatchGroup BatchGroup in _ACHBatchGroups)
+                    if(_BatchListWorker.CancellationPending)
                     {
-                        if(_BatchListWorker.CancellationPending)
-                        {
-                            e.Cancel = true;
-                            break;
-                        }
-
-                        cxt.Entry(BatchGroup).Collection(a => a.ACHBatch).Load();
-
-                        _ACHBatchLists.Add(new ACHBatchList(_config, BatchGroup));
+                        e.Cancel = true;
+                        break;
                     }
+              
+                    _ACHBatchLists.Add(new ACHBatchList(_config, BatchGroup));
                 }
             }
             catch (Exception ex)
