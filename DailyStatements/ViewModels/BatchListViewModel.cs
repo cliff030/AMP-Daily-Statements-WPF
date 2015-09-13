@@ -158,7 +158,8 @@ namespace AMPStatements.ViewModels
             }
             catch (Exception ex)
             {
-                throw ex;
+                e.Cancel = true;
+                System.Windows.MessageBox.Show(ex.ToString());
             }
         }
 

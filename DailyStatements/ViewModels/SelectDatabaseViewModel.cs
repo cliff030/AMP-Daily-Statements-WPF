@@ -37,15 +37,22 @@ namespace AMPStatements.ViewModels
             }
             else
             {
-                DatabaseConfiguration config = new DatabaseConfiguration(_SelectedCompany.DatabaseName);
+                try
+                {
+                    DatabaseConfiguration config = new DatabaseConfiguration(_SelectedCompany.DatabaseName);
 
-                MainWindow window = new MainWindow();       
-                var vm = new BatchListViewModel(config);
-                vm.ClosingRequest += (sender, e) => window.Close();
-                window.DataContext = vm;
-                window.Show();
+                    MainWindow window = new MainWindow();
+                    var vm = new BatchListViewModel(config);
+                    vm.ClosingRequest += (sender, e) => window.Close();
+                    window.DataContext = vm;
+                    window.Show();
 
-                this.OnClosingRequest();
+                    this.OnClosingRequest();
+                }
+                catch(Exception ex)
+                {
+                    System.Windows.MessageBox.Show(ex.ToString());
+                }
             }
         }
 
