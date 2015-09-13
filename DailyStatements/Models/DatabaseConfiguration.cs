@@ -31,11 +31,6 @@ namespace AMPStatements.Models
             {
                 _AppConnectionString = ConfigurationManager.ConnectionStrings[_ConnectionStringName].ConnectionString;
 
-                if(_AppConnectionString == null)
-                {
-                    throw new Exception(String.Format("Unable to locate connection string {0}", _ConnectionStringName));
-                }
-
                 _eb = new EntityConnectionStringBuilder(_AppConnectionString);
                 SqlConnectionStringBuilder sb = new SqlConnectionStringBuilder(_eb.ProviderConnectionString);
 

@@ -39,6 +39,12 @@
         }
         "Entry"
         {
+        "MsmKey" = "8:_CB350BE45326441294C86E168D543446"
+        "OwnerKey" = "8:_UNDEFINED"
+        "MsmSig" = "8:_UNDEFINED"
+        }
+        "Entry"
+        {
         "MsmKey" = "8:_F25F45531634FE9F9DBB810977B90B2D"
         "OwnerKey" = "8:_5C857580F0084A62A8F98803D5D7AA4B"
         "MsmSig" = "8:_UNDEFINED"
@@ -192,6 +198,26 @@
             "IsDependency" = "11:TRUE"
             "IsolateTo" = "8:"
             }
+            "{1FB2D0AE-D3B9-43D4-B9DD-F88EC61E35DE}:_CB350BE45326441294C86E168D543446"
+            {
+            "SourcePath" = "8:..\\..\\..\\..\\Visual Studio 2010\\Projects\\Daily Statements\\Daily Statements\\Daily Statements.ico"
+            "TargetName" = "8:AMP Statements.ico"
+            "Tag" = "8:"
+            "Folder" = "8:_63223CE4D1A4497AB7B38EB13C983D48"
+            "Condition" = "8:"
+            "Transitive" = "11:FALSE"
+            "Vital" = "11:TRUE"
+            "ReadOnly" = "11:FALSE"
+            "Hidden" = "11:FALSE"
+            "System" = "11:FALSE"
+            "Permanent" = "11:FALSE"
+            "SharedLegacy" = "11:FALSE"
+            "PackageAs" = "3:1"
+            "Register" = "3:1"
+            "Exclude" = "11:FALSE"
+            "IsDependency" = "11:FALSE"
+            "IsolateTo" = "8:"
+            }
             "{9F6F8455-1EF1-4B85-886A-4223BCC8E7F7}:_F25F45531634FE9F9DBB810977B90B2D"
             {
             "AssemblyRegister" = "3:1"
@@ -290,15 +316,15 @@
         {
         "Name" = "8:Microsoft Visual Studio"
         "ProductName" = "8:AMP Statements"
-        "ProductCode" = "8:{1FEFCAEA-2140-4DD3-957E-05F9A309231E}"
-        "PackageCode" = "8:{CE06DA88-842C-461A-A738-06A6688B781F}"
+        "ProductCode" = "8:{8D75E685-EEB8-4F52-9A51-7B7D9EA52141}"
+        "PackageCode" = "8:{B9F5C220-ED9B-475A-BA1E-08DEBF257C57}"
         "UpgradeCode" = "8:{56A34F04-B493-4DCC-9D86-68526571B265}"
         "AspNetVersion" = "8:4.0.30319.0"
         "RestartWWWService" = "11:FALSE"
         "RemovePreviousVersions" = "11:TRUE"
         "DetectNewerInstalledVersion" = "11:TRUE"
         "InstallAllUsers" = "11:TRUE"
-        "ProductVersion" = "8:1.0.1"
+        "ProductVersion" = "8:1.0.6"
         "Manufacturer" = "8:Account Management Plus, Inc."
         "ARPHELPTELEPHONE" = "8:"
         "ARPHELPLINK" = "8:"
@@ -422,7 +448,7 @@
             "Target" = "8:_5C857580F0084A62A8F98803D5D7AA4B"
             "Folder" = "8:_622522F498684A2498C2F2CE46104AD3"
             "WorkingFolder" = "8:_63223CE4D1A4497AB7B38EB13C983D48"
-            "Icon" = "8:"
+            "Icon" = "8:_CB350BE45326441294C86E168D543446"
             "Feature" = "8:"
             }
             "{970C0BB2-C7D0-45D7-ABFA-7EC378858BC0}:_DB23D53648354063BEFD66B4F236345A"
@@ -436,7 +462,7 @@
             "Target" = "8:_5C857580F0084A62A8F98803D5D7AA4B"
             "Folder" = "8:_582EC6309CE24F9CB5BDE15481C83809"
             "WorkingFolder" = "8:_63223CE4D1A4497AB7B38EB13C983D48"
-            "Icon" = "8:"
+            "Icon" = "8:_CB350BE45326441294C86E168D543446"
             "Feature" = "8:"
             }
         }
@@ -838,6 +864,34 @@
         }
         "ProjectOutput"
         {
+            "{5259A561-127C-4D43-A0A1-72F10C7B3BF8}:_3EA356B0C19A47B0A6036B5F7CC16E9A"
+            {
+            "SourcePath" = "8:"
+            "TargetName" = "8:"
+            "Tag" = "8:"
+            "Folder" = "8:_63223CE4D1A4497AB7B38EB13C983D48"
+            "Condition" = "8:"
+            "Transitive" = "11:FALSE"
+            "Vital" = "11:TRUE"
+            "ReadOnly" = "11:FALSE"
+            "Hidden" = "11:FALSE"
+            "System" = "11:FALSE"
+            "Permanent" = "11:FALSE"
+            "SharedLegacy" = "11:FALSE"
+            "PackageAs" = "3:1"
+            "Register" = "3:1"
+            "Exclude" = "11:FALSE"
+            "IsDependency" = "11:FALSE"
+            "IsolateTo" = "8:"
+            "ProjectOutputGroupRegister" = "3:1"
+            "OutputConfiguration" = "8:"
+            "OutputGroupCanonicalName" = "8:ContentFiles"
+            "OutputProjectGuid" = "8:{DA844571-FEA9-4853-9CD7-0ECB6A2D6AFB}"
+            "ShowKeyOutput" = "11:TRUE"
+                "ExcludeFilters"
+                {
+                }
+            }
             "{5259A561-127C-4D43-A0A1-72F10C7B3BF8}:_5C857580F0084A62A8F98803D5D7AA4B"
             {
             "SourcePath" = "8:..\\DailyStatements\\obj\\Release\\AMPStatements.exe"
@@ -860,6 +914,34 @@
             "ProjectOutputGroupRegister" = "3:1"
             "OutputConfiguration" = "8:"
             "OutputGroupCanonicalName" = "8:Built"
+            "OutputProjectGuid" = "8:{DA844571-FEA9-4853-9CD7-0ECB6A2D6AFB}"
+            "ShowKeyOutput" = "11:TRUE"
+                "ExcludeFilters"
+                {
+                }
+            }
+            "{5259A561-127C-4D43-A0A1-72F10C7B3BF8}:_F5D557A8D13542268479B790858E3F63"
+            {
+            "SourcePath" = "8:"
+            "TargetName" = "8:"
+            "Tag" = "8:"
+            "Folder" = "8:_63223CE4D1A4497AB7B38EB13C983D48"
+            "Condition" = "8:"
+            "Transitive" = "11:FALSE"
+            "Vital" = "11:TRUE"
+            "ReadOnly" = "11:FALSE"
+            "Hidden" = "11:FALSE"
+            "System" = "11:FALSE"
+            "Permanent" = "11:FALSE"
+            "SharedLegacy" = "11:FALSE"
+            "PackageAs" = "3:1"
+            "Register" = "3:1"
+            "Exclude" = "11:FALSE"
+            "IsDependency" = "11:FALSE"
+            "IsolateTo" = "8:"
+            "ProjectOutputGroupRegister" = "3:1"
+            "OutputConfiguration" = "8:"
+            "OutputGroupCanonicalName" = "8:ContentFiles"
             "OutputProjectGuid" = "8:{DA844571-FEA9-4853-9CD7-0ECB6A2D6AFB}"
             "ShowKeyOutput" = "11:TRUE"
                 "ExcludeFilters"
