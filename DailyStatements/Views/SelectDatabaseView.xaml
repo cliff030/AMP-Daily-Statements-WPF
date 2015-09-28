@@ -4,7 +4,7 @@
     xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
     xmlns:vm="clr-namespace:AMPStatements.ViewModels"
     xmlns:i="clr-namespace:System.Windows.Interactivity;assembly=System.Windows.Interactivity"
-    Title="Daily Statements" Height="151" Width="258" WindowStartupLocation="CenterScreen">
+    Title="AMP Statements" Height="151" Width="258" WindowStartupLocation="CenterScreen">
     <Grid>
         <ComboBox x:Name="comboBox1" ItemsSource="{Binding Path=CompanyList}" DisplayMemberPath="CompanyName" SelectedItem="{Binding Path=SelectedCompany,Mode=TwoWay}" HorizontalAlignment="Left" Margin="12,40,0,0" VerticalAlignment="Top" Width="228" RenderTransformOrigin="0.483,1.5">
             <i:Interaction.Triggers>
