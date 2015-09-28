@@ -111,8 +111,6 @@ namespace AMPStatements.Models.Reports
                 using (WindowsImpersonationContext wic = WindowsIdentity.Impersonate(IntPtr.Zero))
                 {
                     //code to send printdocument to the printer
-                    //Set Your Printer Name here
-                    printerSettings.PrinterName = "Microsoft XPS Document Writer";
                     pd.PrinterSettings = printerSettings;
                     pd.PrintPage += this.pd_PrintPage;
 
