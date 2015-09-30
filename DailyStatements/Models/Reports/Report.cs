@@ -83,6 +83,8 @@ namespace AMPStatements.Models.Reports
                 printerSettings.PrintRange = PrintRange.AllPages;//PrintRange.SomePages;
 
                 PrintDocument pd = new PrintDocument();
+                pd.PrintController = new StandardPrintController();
+
                 if (toPage != -1 && fromPage != -1)
                 {
                     _currentPrintingPage = fromPage;
