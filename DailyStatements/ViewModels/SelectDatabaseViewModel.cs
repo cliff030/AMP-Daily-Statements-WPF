@@ -11,20 +11,19 @@ namespace AMPStatements.ViewModels
 {
     public class SelectDatabaseViewModel : ViewModel
     {
-        private List<DatabaseConfiguration.CompanyList> _CompanyList;
+        private List<Company> _CompanyList;
 
         private RelayCommand _SelectCompanyCommand;
-        private DatabaseConfiguration.CompanyList _SelectedCompany;
+        private Company _SelectedCompany;
 
         public SelectDatabaseViewModel()
         {
-            List<DatabaseConfiguration.CompanyList> TempList = DatabaseConfiguration.GetCompanyList();
-            _CompanyList = new List<DatabaseConfiguration.CompanyList>();
-
-            // Make sure the list of companies is definitely in the order we want.
-            for(int i = 0; i < TempList.Count; i++)
+            using(var cxt = new CreditsoftCompaniesEntities())
             {
-                _CompanyList.Add(TempList.Where(t => t.Order == i).FirstOrDefault());
+                _CompanyList = (from c in cxt.Companies
+                               where c.Active == true
+                               orderby c.MenuOption
+                               select c).ToList();
             }
         }
 
@@ -39,7 +38,7 @@ namespace AMPStatements.ViewModels
             {
                 try
                 {
-                    DatabaseConfiguration config = new DatabaseConfiguration(_SelectedCompany.DatabaseName);
+                    DatabaseConfiguration config = new DatabaseConfiguration(_SelectedCompany.CreditsoftDatabase);
 
                     MainWindow window = new MainWindow();
                     var vm = new BatchListViewModel(config);
@@ -56,7 +55,7 @@ namespace AMPStatements.ViewModels
             }
         }
 
-        public DatabaseConfiguration.CompanyList SelectedCompany
+        public Company SelectedCompany
         {
             get { return _SelectedCompany; }
             set 
@@ -69,11 +68,11 @@ namespace AMPStatements.ViewModels
             }
         }
 
-        public ObservableCollection<DatabaseConfiguration.CompanyList> CompanyList
+        public ObservableCollection<Company> CompanyList
         {
             get 
-            { 
-                return new ObservableCollection<DatabaseConfiguration.CompanyList>(_CompanyList); 
+            {
+                return new ObservableCollection<Company>(_CompanyList); 
             }
         }
 

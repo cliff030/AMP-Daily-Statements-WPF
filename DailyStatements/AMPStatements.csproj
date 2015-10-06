@@ -91,6 +91,25 @@
       <SubType>Designer</SubType>
     </ApplicationDefinition>
     <Compile Include="Models\ACHBatchList.cs" />
+    <Compile Include="Models\Company.cs">
+      <DependentUpon>CreditsoftCompany.tt</DependentUpon>
+    </Compile>
+    <Compile Include="Models\CreditsoftCompany.Context.cs">
+      <AutoGen>True</AutoGen>
+      <DesignTime>True</DesignTime>
+      <DependentUpon>CreditsoftCompany.Context.tt</DependentUpon>
+    </Compile>
+    <Compile Include="Models\CreditsoftCompany.cs">
+      <AutoGen>True</AutoGen>
+      <DesignTime>True</DesignTime>
+      <DependentUpon>CreditsoftCompany.tt</DependentUpon>
+    </Compile>
+    <Compile Include="Models\CreditsoftCompany.Designer.cs">
+      <AutoGen>True</AutoGen>
+      <DesignTime>True</DesignTime>
+      <DependentUpon>CreditsoftCompany.edmx</DependentUpon>
+    </Compile>
+    <Compile Include="Models\CreditsoftCompany.Views.cs" />
     <Compile Include="Models\Custom_DailyStatementsPrintLog.cs">
       <DependentUpon>Creditsoft.tt</DependentUpon>
     </Compile>
@@ -242,6 +261,23 @@
       <Generator>TextTemplatingFileGenerator</Generator>
       <DependentUpon>Creditsoft.edmx</DependentUpon>
       <LastGenOutput>Creditsoft.cs</LastGenOutput>
+    </None>
+    <EntityDeploy Include="Models\CreditsoftCompany.edmx">
+      <Generator>EntityModelCodeGenerator</Generator>
+      <LastGenOutput>CreditsoftCompany.Designer.cs</LastGenOutput>
+    </EntityDeploy>
+    <None Include="Models\CreditsoftCompany.Context.tt">
+      <Generator>TextTemplatingFileGenerator</Generator>
+      <DependentUpon>CreditsoftCompany.edmx</DependentUpon>
+      <LastGenOutput>CreditsoftCompany.Context.cs</LastGenOutput>
+    </None>
+    <None Include="Models\CreditsoftCompany.edmx.diagram">
+      <DependentUpon>CreditsoftCompany.edmx</DependentUpon>
+    </None>
+    <None Include="Models\CreditsoftCompany.tt">
+      <Generator>TextTemplatingFileGenerator</Generator>
+      <DependentUpon>CreditsoftCompany.edmx</DependentUpon>
+      <LastGenOutput>CreditsoftCompany.cs</LastGenOutput>
     </None>
     <None Include="packages.config" />
     <None Include="Properties\Settings.settings">

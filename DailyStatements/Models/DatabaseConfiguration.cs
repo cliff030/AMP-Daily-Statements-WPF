@@ -6,6 +6,7 @@ using System.Data.SqlClient;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using AMPStatements.Models;
 
 namespace AMPStatements.Models
 {
@@ -44,56 +45,21 @@ namespace AMPStatements.Models
             }
         }
 
-        public static List<CompanyList> GetCompanyList()
+        public static List<Company> GetCompanyList()
         {
-            List<CompanyList> CompanyList = new List<CompanyList>();
+            List<Company> CompanyList = new List<Company>();
 
-            CompanyList SelectFinancial = new CompanyList();
-            SelectFinancial.CompanyName = "Select Financial";
-            SelectFinancial.DatabaseName = "CSDATA8";
-            SelectFinancial.Order = 0;
+            using(var cxt = new CreditsoftCompaniesEntities())
+            {
+                var q = from c in cxt.Companies
+                        where c.Active == true
+                        orderby c.MenuOption ascending
+                        select c;
 
-            CompanyList LibertyFinancial = new CompanyList();
-            LibertyFinancial.CompanyName = "Liberty Financial";
-            LibertyFinancial.DatabaseName = "CSDATA8_INC";
-            LibertyFinancial.Order = 1;
-
-            CompanyList FirstFinancial = new CompanyList();
-            FirstFinancial.CompanyName = "First Financial";
-            FirstFinancial.DatabaseName = "CSDATA8_FFN";
-            FirstFinancial.Order = 2;
-
-            CompanyList KarmaCapital = new CompanyList();
-            KarmaCapital.CompanyName = "Karma Capital";
-            KarmaCapital.DatabaseName = "CSDATA8_KAR";
-            KarmaCapital.Order = 3;
-            
-            CompanyList.Add(SelectFinancial);
-            CompanyList.Add(LibertyFinancial);
-            CompanyList.Add(FirstFinancial);
-            CompanyList.Add(KarmaCapital);
+                CompanyList = q.ToList();
+            }
 
             return CompanyList;
-        }
-
-        public struct CompanyList
-        {
-            public string CompanyName { get; set; }
-            public string DatabaseName { get; set; }
-            public int Order { get; set; }
-
-
-            // Override the == and != operators so we can compare these objects
-            // This is useful for set operators on ViewModel public properties
-            public static bool operator ==(CompanyList c1, CompanyList c2)
-            {
-                return c1.Equals(c2);
-            }
-
-            public static bool operator !=(CompanyList c1, CompanyList c2)
-            {
-                return !c1.Equals(c2);
-            }
         }
 
         public string ConnectionString

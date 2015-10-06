@@ -52,7 +52,7 @@
         "Entry"
         {
         "MsmKey" = "8:_UNDEFINED"
-        "OwnerKey" = "8:_4D02D5B91F38186652056EA092F9A651"
+        "OwnerKey" = "8:_5C857580F0084A62A8F98803D5D7AA4B"
         "MsmSig" = "8:_UNDEFINED"
         }
         "Entry"
@@ -64,7 +64,7 @@
         "Entry"
         {
         "MsmKey" = "8:_UNDEFINED"
-        "OwnerKey" = "8:_5C857580F0084A62A8F98803D5D7AA4B"
+        "OwnerKey" = "8:_4D02D5B91F38186652056EA092F9A651"
         "MsmSig" = "8:_UNDEFINED"
         }
     }
@@ -169,11 +169,6 @@
             "AssemblyAsmDisplayName" = "8:EntityFramework.SqlServer, Version=6.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089, processorArchitecture=MSIL"
                 "ScatterAssemblies"
                 {
-                    "_4D02D5B91F38186652056EA092F9A651"
-                    {
-                    "Name" = "8:EntityFramework.SqlServer.dll"
-                    "Attributes" = "3:512"
-                    }
                 }
             "SourcePath" = "8:EntityFramework.SqlServer.dll"
             "TargetName" = "8:"
@@ -200,11 +195,6 @@
             "AssemblyAsmDisplayName" = "8:EntityFramework, Version=6.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089, processorArchitecture=MSIL"
                 "ScatterAssemblies"
                 {
-                    "_A4BCA2247FBB03CF3F1DC5887040D36C"
-                    {
-                    "Name" = "8:EntityFramework.dll"
-                    "Attributes" = "3:512"
-                    }
                 }
             "SourcePath" = "8:EntityFramework.dll"
             "TargetName" = "8:"
@@ -231,11 +221,6 @@
             "AssemblyAsmDisplayName" = "8:System.Windows.Interactivity, Version=4.5.0.0, Culture=neutral, PublicKeyToken=31bf3856ad364e35, processorArchitecture=MSIL"
                 "ScatterAssemblies"
                 {
-                    "_F25F45531634FE9F9DBB810977B90B2D"
-                    {
-                    "Name" = "8:System.Windows.Interactivity.dll"
-                    "Attributes" = "3:512"
-                    }
                 }
             "SourcePath" = "8:System.Windows.Interactivity.dll"
             "TargetName" = "8:"
@@ -322,15 +307,15 @@
         {
         "Name" = "8:Microsoft Visual Studio"
         "ProductName" = "8:AMP Statements"
-        "ProductCode" = "8:{EF08B58D-C8C7-464A-A611-E2939B350CEB}"
-        "PackageCode" = "8:{9D88C46F-4936-40F7-ADD2-785D13A86533}"
+        "ProductCode" = "8:{AFA3FAB6-694C-48D4-AC33-6EEC547A7777}"
+        "PackageCode" = "8:{EB4C41B5-C6B8-4F4E-994B-7746CBA836A0}"
         "UpgradeCode" = "8:{56A34F04-B493-4DCC-9D86-68526571B265}"
         "AspNetVersion" = "8:4.0.30319.0"
         "RestartWWWService" = "11:FALSE"
         "RemovePreviousVersions" = "11:TRUE"
         "DetectNewerInstalledVersion" = "11:TRUE"
         "InstallAllUsers" = "11:TRUE"
-        "ProductVersion" = "8:1.0.11"
+        "ProductVersion" = "8:1.1.0"
         "Manufacturer" = "8:Account Management Plus, Inc."
         "ARPHELPTELEPHONE" = "8:"
         "ARPHELPLINK" = "8:"

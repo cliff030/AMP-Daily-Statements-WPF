@@ -101,14 +101,11 @@ namespace AMPStatements.Models.Reports
                     }
                     printerSettings.FromPage = fromPage;
                     printerSettings.ToPage = toPage;
-
-                    Console.WriteLine("Printing report... Start Page:{0} End Page:{1} Total Page(s):{2}", fromPage, toPage, _numberOfPages);
                 }
                 else
                 {
                     _currentPrintingPage = 1;
                     _lastPrintingPage = _numberOfPages;
-                    Console.WriteLine("Printing report...");
                 }
                 using (WindowsImpersonationContext wic = WindowsIdentity.Impersonate(IntPtr.Zero))
                 {
@@ -121,8 +118,7 @@ namespace AMPStatements.Models.Reports
             }
             catch (Exception ex)
             {
-                //System.Windows.Forms.MessageBox.Show(ex.ToString());
-                Console.WriteLine(ex.Message);
+                throw ex;
             }
             return true;
         }
@@ -194,16 +190,17 @@ namespace AMPStatements.Models.Reports
             }
             catch (System.Web.Services.Protocols.SoapException ex)
             {
-                Console.WriteLine(ex.Detail.InnerXml);
+                throw ex;
             }
             catch (Exception ex)
             {
-                Console.WriteLine(ex.Message);
+                throw ex;
             }
             finally
             {
                 // Console.WriteLine("Number of pages: {0}", pages.Length);
             }
+
             return null;
         }
 
@@ -246,8 +243,8 @@ namespace AMPStatements.Models.Reports
 
                 int height = _metafile.Height;
                 _delegate = new Graphics.EnumerateMetafileProc(MetafileCallback);
+
                 // Draw in the rectangle
-                //Point destPoint = new Point(0, 0);
                 Point[] points = new Point[3];
                 Point destPoint = new Point(0, 0);
                 Point destPoint1 = new Point(width / 2, 0);
