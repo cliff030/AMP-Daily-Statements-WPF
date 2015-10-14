@@ -154,9 +154,11 @@ namespace AMPStatements.ViewModels
                         e.Cancel = true;
                         break;
                     }
-              
+             
                     _ACHBatchLists.Add(new ACHBatchList(_config, BatchGroup));
                 }
+
+                _ACHBatchLists = new ObservableCollection<ACHBatchList>(_ACHBatchLists.Where(ab => ab.NumberOfItems >= 0).ToList());
             }
             catch (Exception ex)
             {

@@ -33,6 +33,8 @@ namespace AMPStatements.Models.Reports
         private string _Uri = "http://amp-dc/ReportServer/reportexecution2005.asmx?wsdl";
         private string _FilePath = Path.Combine(System.Environment.GetFolderPath(Environment.SpecialFolder.Desktop), "Daily Statements");
 
+        private PrintDocument _pd = new PrintDocument();
+
         public Report()
         {
             rs.Credentials = System.Net.CredentialCache.DefaultNetworkCredentials;
@@ -82,10 +84,8 @@ namespace AMPStatements.Models.Reports
                 printerSettings.MinimumPage = 1;
                 printerSettings.PrintRange = PrintRange.AllPages;//PrintRange.SomePages;
                 
-                PrintDocument pd = new PrintDocument();
-                pd.PrintController = new StandardPrintController();
-               // pd.DefaultPageSettings.Margins = new Margins(50, 50, 50, 50);
-
+                _pd.PrintController = new StandardPrintController();
+                
                 //System.Windows.MessageBox.Show(pd.DefaultPageSettings.PrintableArea.ToString());
 
                 if (toPage != -1 && fromPage != -1)
@@ -113,10 +113,10 @@ namespace AMPStatements.Models.Reports
                 using (WindowsImpersonationContext wic = WindowsIdentity.Impersonate(IntPtr.Zero))
                 {
                     //code to send printdocument to the printer
-                    pd.PrinterSettings = printerSettings;
-                    pd.PrintPage += this.pd_PrintPage;
+                    _pd.PrinterSettings = printerSettings;
+                    _pd.PrintPage += this.pd_PrintPage;
 
-                    pd.Print();
+                    _pd.Print();
                 }
             }
             catch (Exception ex)
@@ -248,15 +248,9 @@ namespace AMPStatements.Models.Reports
                 _delegate = new Graphics.EnumerateMetafileProc(MetafileCallback);
 
                 // Draw in the rectangle
-                Point[] points = new Point[3];
-                Point destPoint = new Point(0, 0);
-                Point destPoint1 = new Point(width / 2, 0);
-                Point destPoint2 = new Point(0, height / 2);
+                Rectangle destRect = new Rectangle(0, 0, _pd.DefaultPageSettings.PaperSize.Width, _pd.DefaultPageSettings.PaperSize.Height);
+                g.EnumerateMetafile(_metafile, destRect, _delegate);
 
-                points[0] = destPoint;
-                points[1] = destPoint1;
-                points[2] = destPoint2;
-                g.EnumerateMetafile(_metafile, points, _delegate);
                 // Clean up
                 _delegate = null;
             }
