@@ -81,9 +81,12 @@ namespace AMPStatements.Models.Reports
                 printerSettings.MaximumPage = _numberOfPages;
                 printerSettings.MinimumPage = 1;
                 printerSettings.PrintRange = PrintRange.AllPages;//PrintRange.SomePages;
-
+                
                 PrintDocument pd = new PrintDocument();
                 pd.PrintController = new StandardPrintController();
+               // pd.DefaultPageSettings.Margins = new Margins(50, 50, 50, 50);
+
+                //System.Windows.MessageBox.Show(pd.DefaultPageSettings.PrintableArea.ToString());
 
                 if (toPage != -1 && fromPage != -1)
                 {

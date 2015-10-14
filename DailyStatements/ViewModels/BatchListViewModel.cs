@@ -119,15 +119,17 @@ namespace AMPStatements.ViewModels
             }
             else
             {
-               _SelectedACHBatchList.UpdatePrintLog(System.Security.Principal.WindowsIdentity.GetCurrent());
+                ACHBatchList resBatchList = (ACHBatchList)e.Result;
+
+                resBatchList.UpdatePrintLog(System.Security.Principal.WindowsIdentity.GetCurrent());
 
                List<ACHBatchList> tmpACHBatchLists = _ACHBatchLists.ToList();
-               var tmpACHBatchList = tmpACHBatchLists.SingleOrDefault(a => a.ACHBatchGroupID == _SelectedACHBatchList.ACHBatchGroupID);
-               tmpACHBatchList = _SelectedACHBatchList;
+               var tmpACHBatchList = tmpACHBatchLists.SingleOrDefault(a => a.ACHBatchGroupID == resBatchList.ACHBatchGroupID);
+               tmpACHBatchList = resBatchList;
 
                ACHBatchLists = new ObservableCollection<ACHBatchList>(tmpACHBatchLists);
 
-               string prompt = String.Format("Reports for Batch Group ID {0} have been successfully printed.", _SelectedACHBatchList.ACHBatchGroupID);
+               string prompt = String.Format("Reports for Batch Group ID {0} have been successfully printed.", resBatchList.ACHBatchGroupID);
 
                 System.Windows.MessageBox.Show(prompt);
             }
@@ -193,15 +195,16 @@ namespace AMPStatements.ViewModels
 
         private void _CreateReports(object sender, DoWorkEventArgs e)
         {
+            ACHBatchList BatchList = _SelectedACHBatchList;
             _Reprint = false;
 
             Application.Current.Dispatcher.Invoke((Action)delegate
             {
 
-                if (_SelectedACHBatchList.PrintLog != null)
+                if (BatchList.PrintLog != null)
                 {
                     string PromptText = String.Format("Batch Group ID {0} was printed on {1:d} by {2}. Would you like to print it again?",
-                        _SelectedACHBatchList.ACHBatchGroupID, _SelectedACHBatchList.PrintLog.DatePrinted, _SelectedACHBatchList.PrintLog.PrintedBy);
+                        BatchList.ACHBatchGroupID, BatchList.PrintLog.DatePrinted, BatchList.PrintLog.PrintedBy);
 
                     var vw = new AMPStatements.Views.GenericModalView(PromptText);
                     var vm = (GenericModalViewModel)vw.DataContext;
@@ -213,7 +216,7 @@ namespace AMPStatements.ViewModels
 
             });
 
-            if (_Reprint == false && _SelectedACHBatchList.PrintLog != null)
+            if (_Reprint == false && BatchList.PrintLog != null)
             {
                 e.Cancel = true;
                 return;
@@ -222,9 +225,9 @@ namespace AMPStatements.ViewModels
             ReportCreationProgressVisibility = System.Windows.Visibility.Visible;
 
             double i = 0;
-            double TotalClients = _SelectedACHBatchList.FilteredACHClientIDs.Count;
+            double TotalClients = BatchList.FilteredACHClientIDs.Count;
 
-            foreach (int ClientID in _SelectedACHBatchList.FilteredACHClientIDs)
+            foreach (int ClientID in BatchList.FilteredACHClientIDs)
             {
                 if(_CreateReportsWorker.CancellationPending)
                 {
@@ -245,6 +248,8 @@ namespace AMPStatements.ViewModels
                 int Progress = Convert.ToInt32((i / TotalClients) * 100);
                 _CreateReportsWorker.ReportProgress(Progress);
             }
+
+            e.Result = BatchList;
         }
 
         public void CreateReports()
