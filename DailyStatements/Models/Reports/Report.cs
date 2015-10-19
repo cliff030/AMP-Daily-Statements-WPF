@@ -220,7 +220,7 @@ namespace AMPStatements.Models.Reports
             if (_currentPrintingPage <= _lastPrintingPage && MoveToPage(_currentPrintingPage))
             {
                 // Draw the page
-                ReportDrawPage(ev.Graphics);
+                ReportDrawPage(ev);
                 // If the next page is less than or equal to the last page,
                 // print another page.
                 if (System.Threading.Interlocked.Increment(ref _currentPrintingPage) <= _lastPrintingPage)
@@ -233,7 +233,7 @@ namespace AMPStatements.Models.Reports
 
 
         // Method to draw the current emf memory stream
-        private void ReportDrawPage(Graphics g)
+        private void ReportDrawPage(PrintPageEventArgs ev)
         {
             if (_currentPageStream == null || 0 == _currentPageStream.Length || _metafile == null)
             {
@@ -241,15 +241,16 @@ namespace AMPStatements.Models.Reports
             }
             lock (this)
             {
-                // Set the metafile delegate.
-                int width = _metafile.Width;
-
-                int height = _metafile.Height;
                 _delegate = new Graphics.EnumerateMetafileProc(MetafileCallback);
 
+                RectangleF PrintableArea = ev.PageSettings.PrintableArea;
+
+                int availableWidth = (int)Math.Floor(PrintableArea.Width);
+                int availableHeight = (int)Math.Floor(PrintableArea.Height);
+                
                 // Draw in the rectangle
-                Rectangle destRect = new Rectangle(0, 0, _pd.DefaultPageSettings.PaperSize.Width, _pd.DefaultPageSettings.PaperSize.Height);
-                g.EnumerateMetafile(_metafile, destRect, _delegate);
+                Rectangle destRect = new Rectangle(0, 0, availableWidth, availableHeight);
+                ev.Graphics.EnumerateMetafile(_metafile, destRect, _delegate);
 
                 // Clean up
                 _delegate = null;
